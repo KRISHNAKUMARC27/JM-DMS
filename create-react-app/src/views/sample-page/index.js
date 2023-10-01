@@ -1,20 +1,56 @@
-// material-ui
-import { Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { Breadcrumbs, Link } from '@mui/material';
+import { lazy } from 'react';
 
 // project imports
-import MainCard from 'ui-component/cards/MainCard';
+import Loadable from 'ui-component/Loadable';
+import CarIcon from '@mui/icons-material/DirectionsCarFilled';
 
-// ==============================|| SAMPLE PAGE ||============================== //
+// dashboard routing
+const UtilsShadow = Loadable(lazy(() => import('views/utilities/Shadow')));
 
-const SamplePage = () => (
-  <MainCard title="Sample Card">
-    <Typography variant="body2">
-      Lorem ipsum dolor sit amen, consenter nipissing eli, sed do elusion tempos incident ut laborers et doolie magna alissa. Ut enif ad
-      minim venice, quin nostrum exercitation illampu laborings nisi ut liquid ex ea commons construal. Duos aube grue dolor in reprehended
-      in voltage veil esse colum doolie eu fujian bulla parian. Exceptive sin ocean cuspidate non president, sunk in culpa qui officiate
-      descent molls anim id est labours.
-    </Typography>
-  </MainCard>
-);
+// utilities routing
+const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
+const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
+
+function SamplePage() {
+  const [activeComponent, setActiveComponent] = useState('CarDetails');
+
+  function isCarDetailsComplete() {
+    //return carDetailsData.model && carDetailsData.type;
+    return false;
+  }
+
+  return (
+    <div>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          sx={{
+            padding: '5px 15px',
+            cursor: 'pointer',
+            textDecoration: 'none',
+            color: (theme) => theme.palette.text.primary,
+            borderBottom: isCarDetailsComplete() ? '3px solid green' : '3px solid orange',
+            '&:hover': {
+              color: (theme) => theme.palette.primary.main
+            }
+          }}
+          onClick={() => setActiveComponent('CarDetails')}
+        >
+          <CarIcon sx={{ verticalAlign: 'middle', marginRight: '5px' }} />
+          Car Details
+        </Link>
+        <Link onClick={() => setActiveComponent('UserDetails')}>User Details</Link>
+        <Link onClick={() => setActiveComponent('JobInfo')}>Job Info</Link>
+      </Breadcrumbs>
+
+      <div className="content">
+        {activeComponent === 'CarDetails' && <UtilsShadow />}
+        {activeComponent === 'UserDetails' && <UtilsTypography />}
+        {activeComponent === 'JobInfo' && <UtilsColor />}
+      </div>
+    </div>
+  );
+}
 
 export default SamplePage;
