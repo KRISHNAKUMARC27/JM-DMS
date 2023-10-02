@@ -1,42 +1,70 @@
 // assets
-import { IconKey } from '@tabler/icons';
+import { IconKey, IconIdBadge2, IconTableExport, IconTextPlus } from '@tabler/icons';
 
 // constant
 const icons = {
-  IconKey
+  IconKey,
+  IconIdBadge2,
+  IconTableExport,
+  IconTextPlus
 };
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
 
 const pages = {
   id: 'pages',
-  title: 'Pages',
-  caption: 'Pages Caption',
+  // title: 'Pages',
+  // caption: 'Pages Caption',
   type: 'group',
   children: [
     {
-      id: 'authentication',
-      title: 'Authentication',
+      id: 'job',
+      title: 'Job Card',
       type: 'collapse',
-      icon: icons.IconKey,
+      icon: icons.IconIdBadge2,
 
       children: [
         {
-          id: 'login3',
-          title: 'Login',
+          id: 'allJobs',
+          title: 'All Jobs',
           type: 'item',
-          url: '/pages/login/login3',
-          target: true
+          url: '/card/table',
+          icon: icons.IconTableExport
+          //target: true
         },
         {
-          id: 'register3',
-          title: 'Register',
+          id: 'createCard',
+          title: 'Create New Card',
           type: 'item',
-          url: '/pages/register/register3',
-          target: true
+          url: '/card/createCard',
+          icon: icons.IconTextPlus
+          //target: true
         }
       ]
     }
+    // {
+    //   id: 'authentication',
+    //   title: 'Authentication',
+    //   type: 'collapse',
+    //   icon: icons.IconKey,
+
+    //   children: [
+    //     {
+    //       id: 'login3',
+    //       title: 'Login',
+    //       type: 'item',
+    //       url: '/pages/login/login3',
+    //       target: true
+    //     },
+    //     {
+    //       id: 'register3',
+    //       title: 'Register',
+    //       type: 'item',
+    //       url: '/pages/register/register3',
+    //       target: true
+    //     }
+    //   ]
+    // }
   ]
 };
 

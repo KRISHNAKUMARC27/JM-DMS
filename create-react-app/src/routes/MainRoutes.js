@@ -16,6 +16,7 @@ const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons
 
 // sample page routing
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
+const CreateCard = Loadable(lazy(() => import('views/job/JobCardCreate')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -33,6 +34,24 @@ const MainRoutes = {
         {
           path: 'default',
           element: <DashboardDefault />
+        }
+      ]
+    },
+    {
+      path: 'card',
+      children: [
+        {
+          path: 'table',
+          element: <UtilsTypography />
+        }
+      ]
+    },
+    {
+      path: 'card',
+      children: [
+        {
+          path: 'createCard',
+          element: <CreateCard />
         }
       ]
     },
