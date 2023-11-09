@@ -21,7 +21,7 @@ const JobCarDetails = ({ data, updateData }) => {
     updateData(updatedData);
   };
   const handleKMsChange = (event) => {
-    const updatedData = { ...data, kMs: event.target.value };
+    const updatedData = { ...data, kiloMeters: event.target.value };
     updateData(updatedData);
   };
   const handleTechnicianNameChange = (event) => {
@@ -58,7 +58,7 @@ const JobCarDetails = ({ data, updateData }) => {
             />
           </Grid>
           <Grid item xs={4}>
-            <TextField label="Vehicle K.Ms" required variant="outlined" value={data.kMs || ''} onChange={handleKMsChange} />
+            <TextField label="Vehicle K.Ms" required variant="outlined" value={data.kiloMeters || ''} onChange={handleKMsChange} />
           </Grid>
           <Grid item xs={4}>
             <TextField

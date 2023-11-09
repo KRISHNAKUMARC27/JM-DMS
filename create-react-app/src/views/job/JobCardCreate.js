@@ -7,6 +7,7 @@ import Loadable from 'ui-component/Loadable';
 import CarIcon from '@mui/icons-material/DirectionsCarFilled';
 import Person4Icon from '@mui/icons-material/Person4';
 import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
+import { Button } from '@mui/material';
 
 const JobUserDetails = Loadable(lazy(() => import('views/job/JobUserDetails')));
 const JobCarDetails = Loadable(lazy(() => import('views/job/JobCarDetails')));
@@ -23,13 +24,60 @@ function JobCardCreate() {
   }
 
   function isCarDetailsComplete() {
-    return carDetails.vehicleRegNo && carDetails.vehicleName && carDetails.vehicleModel && carDetails.kMs && carDetails.technicianName;
+    return (
+      carDetails.vehicleRegNo && carDetails.vehicleName && carDetails.vehicleModel && carDetails.kiloMeters && carDetails.technicianName
+    );
   }
 
   function isJobInfoComplete() {
     console.log(JSON.stringify(jobInfo));
     return jobInfo[0].complaints;
   }
+
+  function isJobComplete() {
+    return isUserDetailsComplete() && isCarDetailsComplete() && isJobInfoComplete();
+  }
+
+  const submitJobCard = () => {
+    const jobCard = {
+      jobStatus: 'OPEN',
+      ownerName: userDetails.ownerName,
+      ownerAddress: userDetails.ownerAddress,
+      ownerPhoneNumber: userDetails.ownerPhoneNumber,
+      vehicleRegNo: carDetails.vehicleRegNo,
+      vehicleName: carDetails.vehicleName,
+      vehicleModel: carDetails.vehicleModel,
+      kiloMeters: carDetails.kiloMeters,
+      technicianName: carDetails.technicianName,
+      vehicleOutDate: carDetails.vehicleOutDate,
+      jobInfo: jobInfo
+    };
+
+    saveJobCard(jobCard);
+  };
+
+  const saveJobCard = async (payload) => {
+    await fetch(process.env.REACT_APP_API_URL + '/jobCard', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      }
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || response.statusText);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
 
   return (
     <div>
@@ -89,6 +137,14 @@ function JobCardCreate() {
         {activeComponent === 'CarDetails' && <JobCarDetails data={carDetails} updateData={setCarDetails} />}
         {activeComponent === 'UserDetails' && <JobUserDetails data={userDetails} updateData={setUserDetails} />}
         {activeComponent === 'JobInfo' && <JobInfo data={jobInfo} updateData={setJobInfo} />}
+      </div>
+      <br></br>
+      <div className="content">
+        {isJobComplete() && (
+          <Button variant="contained" color="error" onClick={submitJobCard}>
+            Submit JobCard
+          </Button>
+        )}
       </div>
     </div>
   );
