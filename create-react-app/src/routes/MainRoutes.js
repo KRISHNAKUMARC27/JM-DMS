@@ -18,6 +18,7 @@ const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 const CreateCard = Loadable(lazy(() => import('views/job/JobCardCreate')));
 const AllJobs = Loadable(lazy(() => import('views/job/AllJobs')));
+const JobCardUpdate = Loadable(lazy(() => import('views/job/JobCardUpdate')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -53,6 +54,15 @@ const MainRoutes = {
         {
           path: 'createCard',
           element: <CreateCard />
+        }
+      ]
+    },
+    {
+      path: 'card',
+      children: [
+        {
+          path: 'updateCard',
+          element: <JobCardUpdate />
         }
       ]
     },

@@ -39,6 +39,14 @@ const pages = {
           url: '/card/createCard',
           icon: icons.IconTextPlus
           //target: true
+        },
+        {
+          id: 'updateCard',
+          title: 'Update Job Card',
+          type: 'item',
+          url: '/card/updateCard',
+          icon: icons.IconTextPlus
+          //target: true
         }
       ]
     }

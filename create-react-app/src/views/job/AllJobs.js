@@ -1,62 +1,37 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { MaterialReactTable } from 'material-react-table';
 import { createTheme, ThemeProvider, useTheme } from '@mui/material';
+import PropTypes from 'prop-types';
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import { DialogTitle, Table, TableBody, TableCell, TableHead, TableRow, Button } from '@mui/material';
-import { TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-
+import { DialogTitle, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import Box from '@mui/material/Box';
+import DataRowDialog from 'utils/DataRowDialog';
 
-//nested data is ok, see accessorKeys in ColumnDef below
-// const data = [
-//   {
-//     jobId: 1,
-//     jobStatus: 'OPEN',
-//     ownerName: 'Krishna',
-//     ownerAddress: 'Pungampadi',
-//     ownerPhoneNumber: '9940647937',
-//     vehicleRegNo: 'TN13K7992',
-//     vehicleName: 'Nexon',
-//     vehicleModel: 'Diesel',
-//     kiloMeters: 82000,
-//     technicianName: 'Ramesh',
-//     vehicleOutDate: '09/11/2023, 12:32 PM'
-//   },
-//   {
-//     jobId: 2,
-//     jobStatus: 'CLOSED',
-//     ownerName: 'Chidambaram',
-//     ownerAddress: 'Pungampadi',
-//     ownerPhoneNumber: '9444465765',
-//     vehicleRegNo: 'TN13K7992',
-//     vehicleName: 'Santro',
-//     vehicleModel: 'Diesel',
-//     kiloMeters: 80000,
-//     technicianName: 'Dinesh',
-//     vehicleOutDate: '09/01/2023, 12:32 PM'
-//   },
-//   {
-//     jobId: 3,
-//     jobStatus: 'CANCELLED',
-//     ownerName: 'Krishna',
-//     ownerAddress: 'Pungampadi',
-//     ownerPhoneNumber: '9940647937',
-//     vehicleRegNo: 'TN13K7992',
-//     vehicleName: 'Nexon',
-//     vehicleModel: 'Diesel',
-//     kiloMeters: 81000,
-//     technicianName: 'Ramesh',
-//     vehicleOutDate: '08/11/2023, 12:32 PM'
-//   }
-// ];
+const StatusCell = ({ cell }) => (
+  <Box
+    component="span"
+    sx={() => ({
+      cursor: 'pointer',
+      backgroundColor: cell.getValue() === 'OPEN' ? 'green' : 'red',
+      borderRadius: '0.35rem',
+      //color: "#fff",
+      maxWidth: '9ch',
+      p: '0.25rem'
+      //color: cell.getValue() === 'OPEN' ? 'green' : 'red'
+    })}
+  >
+    {cell.getValue()}
+  </Box>
+);
 
 const AllJobs = () => {
   const [data, setData] = useState([]);
+  const [jobStatusOpen, setJobStatusOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState({});
   const [jobInfoOpen, setJobInfoOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState('');
 
   useEffect(() => {
     fetchAllJobsData();
@@ -83,9 +58,50 @@ const AllJobs = () => {
       });
   };
 
+  const handleJobStatusChange = (event) => {
+    const updatedData = { ...selectedRow, jobStatus: event.target.value };
+    setSelectedRow(updatedData);
+  };
+
   const handleClose = () => {
+    setSelectedRow({});
+    setJobStatusOpen(false);
     setJobInfoOpen(false);
   };
+
+  const handleSave = () => {
+    updateJobCard(selectedRow);
+    fetchAllJobsData();
+    handleClose();
+  };
+
+  const updateJobCard = async (payload) => {
+    await fetch(process.env.REACT_APP_API_URL + '/jobCard', {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      }
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || response.statusText);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setSelectedRow({});
+        setJobStatusOpen(false);
+      })
+      .catch((err) => {
+        console.log(err.message);
+        setSelectedRow({});
+        setJobStatusOpen(false);
+      });
+  };
+
   //should be memoized or stable
   const columns = useMemo(
     () => [
@@ -99,16 +115,36 @@ const AllJobs = () => {
         header: 'Status',
         size: 150,
         filterVariant: 'select',
-        filterSelectOptions: ['OPEN', 'CLOSED', 'CANCELLED']
+        filterSelectOptions: ['OPEN', 'CLOSED', 'CANCELLED'],
+        Header: <i style={{ color: 'blue' }}>Status</i>,
+        Cell: StatusCell,
+        muiTableBodyCellProps: ({ cell }) => ({
+          onClick: () => {
+            //console.log(cell);
+            //console.log(cell.row.original);
+            setSelectedRow(cell.row.original);
+            setJobStatusOpen(true);
+          }
+          // sx: {
+          //   cursor: 'pointer'
+          //color: 'blue'
+          // borderRight: ' solid #e0e0e0',
+          // alignItems: 'center',
+          // '& .Mui-TableHeadCell-Content-Labels': {
+          //   padding: '0px'
+          // },
+          // '& .MuiBox-root': {
+          //   padding: '0px'
+          // },
+          // backgroundColor: 'white',
+
+          // borderTop: ' solid #e0e0e0'
+          // }
+        })
       },
       {
         accessorKey: 'ownerName', //access nested data with dot notation
         header: 'Owner Name',
-        size: 150
-      },
-      {
-        accessorKey: 'ownerAddress',
-        header: 'Address',
         size: 150
       },
       {
@@ -144,6 +180,11 @@ const AllJobs = () => {
       {
         accessorKey: 'vehicleOutDate',
         header: 'Vechicle Out Date',
+        size: 150
+      },
+      {
+        accessorKey: 'ownerAddress',
+        header: 'Address',
         size: 150
       }
     ],
@@ -202,6 +243,7 @@ const AllJobs = () => {
   const gradientAngle = 195;
   const color1 = '#e2d7d5';
   const color2 = '#4f4563';
+
   return (
     <div>
       <ThemeProvider theme={tableTheme}>
@@ -217,18 +259,18 @@ const AllJobs = () => {
               background: `linear-gradient(${gradientAngle}deg, ${color1}, ${color2})`
             }
           }}
-          muiTableBodyRowProps={({ row }) => ({
-            onClick: () => {
-              //console.log(JSON.stringify(row));
-              setSelectedRow(row.original);
-              setJobInfoOpen(true);
-            },
-            sx: { cursor: 'pointer' }
-          })}
+          // muiTableBodyRowProps={({ row }) => ({
+          //   onClick: () => {
+          //     //console.log(JSON.stringify(row));
+          //     setSelectedRow(row.original);
+          //     setJobInfoOpen(true);
+          //   },
+          //   sx: { cursor: 'pointer' }
+          // })}
         />{' '}
       </ThemeProvider>
       <Dialog
-        open={jobInfoOpen}
+        open={jobStatusOpen}
         onClose={handleClose}
         scroll={'paper'}
         aria-labelledby="scroll-dialog-title"
@@ -245,21 +287,22 @@ const AllJobs = () => {
           }}
         >
           <DialogTitle id="scroll-dialog-title" sx={{ flexGrow: 1, fontSize: '1.5rem' }}>
-            {'Job Info'}
+            {selectedRow.vehicleRegNo}
           </DialogTitle>
-
-          {/* <IconButton onClick={copyToClipboard} color="inherit">
-            <CopyIcon />
-          </IconButton>
-          <IconButton onClick={downloadJSON} color="inherit">
-            <DownloadIcon />
-          </IconButton> */}
         </Box>
         <DialogContent dividers={scroll === 'paper'}>
-          <Table>
+          <FormControl variant="outlined" style={{ margin: '1px 0' }}>
+            <InputLabel>Job Status</InputLabel>
+            <Select value={selectedRow?.jobStatus || ''} onChange={handleJobStatusChange} label="Status">
+              <MenuItem value="CLOSED">CLOSED</MenuItem>
+              <MenuItem value="OPEN">OPEN</MenuItem>
+              <MenuItem value="CANCELLED">CANCELLED</MenuItem>
+            </Select>
+          </FormControl>
+          {/* <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Customer Complaints</TableCell>
+                <TableCell>Job Status</TableCell>
                 <TableCell>Completed</TableCell>
                 <TableCell>Remarks</TableCell>
               </TableRow>
@@ -299,16 +342,26 @@ const AllJobs = () => {
                   </TableRow>
                 ))}
             </TableBody>
-          </Table>
+          </Table> */}
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleSave} color="primary">
+            Save
+          </Button>
           <Button onClick={handleClose} color="secondary">
             Close
           </Button>
         </DialogActions>
       </Dialog>
+      <DataRowDialog open={jobInfoOpen} onClose={handleClose} dataRow={selectedRow} />
     </div>
   );
+};
+
+StatusCell.propTypes = {
+  cell: PropTypes.shape({
+    getValue: PropTypes.func.isRequired
+  }).isRequired
 };
 
 export default AllJobs;
