@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Breadcrumbs, Link } from '@mui/material';
 import { lazy } from 'react';
 
@@ -18,6 +18,14 @@ function JobCardCreate() {
   const [userDetails, setUserDetails] = useState({});
   const [carDetails, setCarDetails] = useState({});
   const [jobInfo, setJobInfo] = useState([...Array(1)].map(() => ({ complaints: '', completed: '', remarks: '' })));
+
+  useEffect(() => {
+    return () => {
+      setUserDetails({});
+      setCarDetails({});
+      setJobInfo([]);
+    };
+  }, []);
 
   function isUserDetailsComplete() {
     return userDetails.ownerName && userDetails.ownerAddress && userDetails.ownerPhoneNumber;

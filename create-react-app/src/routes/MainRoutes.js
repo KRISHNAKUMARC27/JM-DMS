@@ -20,6 +20,10 @@ const CreateCard = Loadable(lazy(() => import('views/job/JobCardCreate')));
 const AllJobs = Loadable(lazy(() => import('views/job/AllJobs')));
 const JobCardUpdate = Loadable(lazy(() => import('views/job/JobCardUpdate')));
 
+const AllSpares = Loadable(lazy(() => import('views/spares/AllSpares')));
+const CreateSpares = Loadable(lazy(() => import('views/spares/SparesCreate')));
+const SparesCategory = Loadable(lazy(() => import('views/spares/SparesCategory')));
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -63,6 +67,33 @@ const MainRoutes = {
         {
           path: 'updateCard',
           element: <JobCardUpdate />
+        }
+      ]
+    },
+    {
+      path: 'spares',
+      children: [
+        {
+          path: 'table',
+          element: <AllSpares />
+        }
+      ]
+    },
+    {
+      path: 'spares',
+      children: [
+        {
+          path: 'createSpares',
+          element: <CreateSpares />
+        }
+      ]
+    },
+    {
+      path: 'spares',
+      children: [
+        {
+          path: 'sparesCategory',
+          element: <SparesCategory />
         }
       ]
     },

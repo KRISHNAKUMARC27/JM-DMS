@@ -6,9 +6,10 @@ import PropTypes from 'prop-types';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import { DialogTitle, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { DialogTitle, Button, FormControl, InputLabel, Select, MenuItem, IconButton, Tooltip } from '@mui/material';
 import Box from '@mui/material/Box';
 import DataRowDialog from 'utils/DataRowDialog';
+import { OpenInNew } from '@mui/icons-material';
 
 const StatusCell = ({ cell }) => (
   <Box
@@ -38,6 +39,9 @@ const AllJobs = () => {
 
     return () => {
       setData([]);
+      setJobStatusOpen(false);
+      setSelectedRow({});
+      setJobInfoOpen(false);
     };
   }, []);
 
@@ -94,6 +98,7 @@ const AllJobs = () => {
         console.log(data);
         setSelectedRow({});
         setJobStatusOpen(false);
+        fetchAllJobsData();
       })
       .catch((err) => {
         console.log(err.message);
@@ -125,22 +130,24 @@ const AllJobs = () => {
             setSelectedRow(cell.row.original);
             setJobStatusOpen(true);
           }
-          // sx: {
-          //   cursor: 'pointer'
-          //color: 'blue'
-          // borderRight: ' solid #e0e0e0',
-          // alignItems: 'center',
-          // '& .Mui-TableHeadCell-Content-Labels': {
-          //   padding: '0px'
-          // },
-          // '& .MuiBox-root': {
-          //   padding: '0px'
-          // },
-          // backgroundColor: 'white',
-
-          // borderTop: ' solid #e0e0e0'
-          // }
         })
+        // sx: {
+        //   cursor: 'pointer'
+        // }
+        //color: 'blue'
+        // borderRight: ' solid #e0e0e0',
+        // alignItems: 'center',
+        // '& .Mui-TableHeadCell-Content-Labels': {
+        //   padding: '0px'
+        // },
+        // '& .MuiBox-root': {
+        //   padding: '0px'
+        // },
+        // backgroundColor: 'white',
+
+        // borderTop: ' solid #e0e0e0'
+        // }
+        // })
       },
       {
         accessorKey: 'ownerName', //access nested data with dot notation
@@ -250,6 +257,8 @@ const AllJobs = () => {
         <MaterialReactTable
           columns={columns}
           data={data}
+          editingMode="modal"
+          enableEditing
           muiTablePaperProps={{
             elevation: 0, //change the mui box shadow
             //customize paper styles
@@ -265,8 +274,22 @@ const AllJobs = () => {
           //     setSelectedRow(row.original);
           //     setJobInfoOpen(true);
           //   },
-          //   sx: { cursor: 'pointer' }
+          //   // sx: { cursor: 'pointer' }
           // })}
+          renderRowActions={({ row }) => (
+            <Box sx={{ display: 'flex', gap: '1rem' }}>
+              <Tooltip arrow placement="right" title="Open Job Card">
+                <IconButton
+                  onClick={() => {
+                    setSelectedRow(row.original);
+                    setJobInfoOpen(true);
+                  }}
+                >
+                  <OpenInNew />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )}
         />{' '}
       </ThemeProvider>
       <Dialog
