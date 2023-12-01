@@ -13,7 +13,7 @@ const icons = {
 
 const pages = {
   id: 'pages',
-  // title: 'Pages',
+  title: 'Job Card',
   // caption: 'Pages Caption',
   type: 'group',
   children: [
@@ -49,48 +49,40 @@ const pages = {
           //target: true
         }
       ]
-    },
-    {
-      id: 'spares',
-      title: 'Spares Inventory',
-      type: 'collapse',
-      icon: icons.IconIdBadge2,
-
-      children: [
-        {
-          id: 'allSpares',
-          title: 'All Spares',
-          type: 'item',
-          url: '/spares/table',
-          icon: icons.IconTableExport
-          //target: true
-        },
-        {
-          id: 'createSpares',
-          title: 'Create New Spares',
-          type: 'item',
-          url: '/spares/createSpares',
-          icon: icons.IconTextPlus
-          //target: true
-        },
-        {
-          id: 'sparesCategory',
-          title: 'Spares Category',
-          type: 'item',
-          url: '/spares/sparesCategory',
-          icon: icons.IconTextPlus
-          //target: true
-        }
-        // {
-        //   id: 'updateCard',
-        //   title: 'Update Job Card',
-        //   type: 'item',
-        //   url: '/card/updateCard',
-        //   icon: icons.IconTextPlus
-        //   //target: true
-        // }
-      ]
     }
+    // {
+    //   id: 'spares',
+    //   title: 'Spares Inventory',
+    //   type: 'collapse',
+    //   icon: icons.IconIdBadge2,
+
+    //   children: [
+    //     {
+    //       id: 'allSpares',
+    //       title: 'All Spares',
+    //       type: 'item',
+    //       url: '/spares/table',
+    //       icon: icons.IconTableExport
+    //       //target: true
+    //     },
+    //     {
+    //       id: 'createSpares',
+    //       title: 'Add New Spares',
+    //       type: 'item',
+    //       url: '/spares/createSpares',
+    //       icon: icons.IconTextPlus
+    //       //target: true
+    //     },
+    //     {
+    //       id: 'sparesCategory',
+    //       title: 'Spares Category',
+    //       type: 'item',
+    //       url: '/spares/sparesCategory',
+    //       icon: icons.IconTextPlus
+    //       //target: true
+    //     }
+    //   ]
+    // }
     // {
     //   id: 'authentication',
     //   title: 'Authentication',

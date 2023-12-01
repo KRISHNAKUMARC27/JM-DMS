@@ -116,7 +116,7 @@ const JobSparesUpdate = ({ data, updateData }) => {
   };
 
   const addAdditionalRows = () => {
-    const newRows = [...Array(1)].map(() => ({ category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' }));
+    const newRows = [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' }));
     updateData((prevRows) => [...prevRows, ...newRows]);
   };
 
@@ -126,7 +126,7 @@ const JobSparesUpdate = ({ data, updateData }) => {
     if (newRows.length > 0) {
       updateData(newRows);
     } else {
-      updateData([...Array(1)].map(() => ({ category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' })));
+      updateData([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' })));
     }
   };
 
@@ -267,10 +267,11 @@ const JobSparesUpdate = ({ data, updateData }) => {
                         value={allSpares.find((option) => option.desc === row.sparesAndLabour) || null}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
                         onChange={(event, newValue) => {
-                          //console.log('new value is ' + JSON.stringify(newValue.desc));
+                          console.log('new value is ' + JSON.stringify(newValue));
                           //setChoosenSpares(newValue);
                           handleInputChange(index, 'sparesAndLabour', newValue.desc);
                           handleInputChange(index, 'rate', newValue.sellRate);
+                          handleInputChange(index, 'sparesId', newValue.id);
                         }}
                         renderInput={(params) => <TextField {...params} label="Search Spares" />}
                       />

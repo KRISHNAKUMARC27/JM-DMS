@@ -7,7 +7,9 @@ import { createTheme, ThemeProvider, useTheme, IconButton, Tooltip, Grid, Button
 import { Edit, Build } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import { gridSpacing } from 'store/constant';
-import Alert from 'views/utilities/Alert';
+//import Alert from 'views/utilities/Alert';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
 
 const JobUserDetails = Loadable(lazy(() => import('views/job/JobUserDetails')));
 const JobCarDetails = Loadable(lazy(() => import('views/job/JobCarDetails')));
@@ -28,10 +30,10 @@ const JobCardUpdate = () => {
 
   const [jobSparesCost, setJobSparesCost] = useState({});
   const [jobSparesInfo, setJobSparesInfo] = useState(
-    [...Array(1)].map(() => ({ category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' }))
+    [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' }))
   );
   const [jobLaborInfo, setJobLaborInfo] = useState(
-    [...Array(1)].map(() => ({ category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' }))
+    [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' }))
   );
   const [jobSparesUpdateOpen, setJobSparesUpdateOpen] = useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
@@ -268,8 +270,8 @@ const JobCardUpdate = () => {
   const handleJobSparesClose = () => {
     setJobSparesUpdateOpen(false);
     setSelectedRowSpares({});
-    setJobSparesInfo([...Array(1)].map(() => ({ category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' })));
-    setJobLaborInfo([...Array(1)].map(() => ({ category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' })));
+    setJobSparesInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' })));
+    setJobLaborInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' })));
     setJobSparesCost({});
   };
   //should be memoized or stable
@@ -507,7 +509,10 @@ const JobCardUpdate = () => {
                   required
                   variant="outlined"
                   value={jobSparesCost.totalSparesValue || ''}
-                  onChange={(e) => handleTotalSparesValueChange(e.target.value)}
+                  InputProps={{
+                    readOnly: true
+                  }}
+                  //onChange={(e) => handleTotalSparesValueChange(e.target.value)}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -516,7 +521,10 @@ const JobCardUpdate = () => {
                   required
                   variant="outlined"
                   value={jobSparesCost.totalLabourValue || ''}
-                  onChange={(e) => handleTotalLabourValueChange(e.target.value)}
+                  InputProps={{
+                    readOnly: true
+                  }}
+                  //onChange={(e) => handleTotalLabourValueChange(e.target.value)}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -525,7 +533,10 @@ const JobCardUpdate = () => {
                   required
                   variant="outlined"
                   value={jobSparesCost.grandTotal || ''}
-                  onChange={(e) => handleGrandTotalValueChange(e.target.value)}
+                  InputProps={{
+                    readOnly: true
+                  }}
+                  //onChange={(e) => handleGrandTotalValueChange(e.target.value)}
                 />
               </Grid>
               <Grid item lg={3} md={6} sm={6} xs={12}>
@@ -544,7 +555,13 @@ const JobCardUpdate = () => {
           )}
         </Grid>
       </Grid>
-      {showAlert && <Alert message={alertMess} onClose={() => setShowAlert(false)} />}
+      {showAlert && (
+        <Stack sx={{ width: '100%' }} spacing={2}>
+          <Alert variant="filled" severity="info" onClose={() => setShowAlert(false)}>
+            {alertMess}
+          </Alert>
+        </Stack>
+      )}
     </div>
   );
 };

@@ -1,10 +1,17 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, lazy } from 'react';
 import { MaterialReactTable } from 'material-react-table';
-import { createTheme, ThemeProvider, useTheme } from '@mui/material';
+import { createTheme, ThemeProvider, useTheme, IconButton, Tooltip, Box, Typography, Grid, Divider } from '@mui/material';
+import { Edit } from '@mui/icons-material';
+import { gridSpacing } from 'store/constant';
+import Loadable from 'ui-component/Loadable';
+
+const SparesCreate = Loadable(lazy(() => import('views/spares/SparesCreate')));
 
 const AllSpares = () => {
   const [data, setData] = useState([]);
   //const [sparesCategoryList, setSparesCategoryList] = useState([]);
+  const [sparesDetails, setSparesDetails] = useState({});
+  const [sparesUpdateOpen, setSparesUpdateOpen] = useState(false);
 
   useEffect(() => {
     fetchAllSparesData();
@@ -184,6 +191,8 @@ const AllSpares = () => {
           columns={columns}
           data={data}
           enableFacetedValues
+          editingMode="modal"
+          enableEditing
           muiTablePaperProps={{
             elevation: 0,
             sx: {
@@ -192,8 +201,41 @@ const AllSpares = () => {
               background: `linear-gradient(${gradientAngle}deg, ${color1}, ${color2})`
             }
           }}
+          renderRowActions={({ row }) => (
+            <Box sx={{ display: 'flex', gap: '1rem' }}>
+              <Tooltip arrow placement="left" title="Update Spares Info">
+                <IconButton
+                  onClick={() => {
+                    setSparesDetails(row.original);
+                    setSparesUpdateOpen(true);
+                  }}
+                >
+                  <Edit />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )}
         />{' '}
       </ThemeProvider>
+      <br></br>
+      <Grid container spacing={gridSpacing}>
+        <Grid item xs={12}>
+          {sparesUpdateOpen && (
+            <Grid container spacing={gridSpacing}>
+              <Grid item xs={12}>
+                <Divider />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="h2">{'Updating Spares: ' + sparesDetails.desc}</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <SparesCreate data={sparesDetails} />
+              </Grid>
+            </Grid>
+          )}
+        </Grid>
+      </Grid>
+      <br></br>
     </div>
   );
 };

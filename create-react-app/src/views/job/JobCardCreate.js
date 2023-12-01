@@ -32,13 +32,11 @@ function JobCardCreate() {
   }
 
   function isCarDetailsComplete() {
-    return (
-      carDetails.vehicleRegNo && carDetails.vehicleName && carDetails.vehicleModel && carDetails.kiloMeters && carDetails.technicianName
-    );
+    return carDetails.vehicleRegNo && carDetails.vehicleName && carDetails.vehicleModel && carDetails.kiloMeters;
   }
 
   function isJobInfoComplete() {
-    console.log(JSON.stringify(jobInfo));
+    //console.log(JSON.stringify(jobInfo));
     return jobInfo[0].complaints;
   }
 
@@ -57,6 +55,7 @@ function JobCardCreate() {
       vehicleModel: carDetails.vehicleModel,
       kiloMeters: carDetails.kiloMeters,
       technicianName: carDetails.technicianName,
+      driver: carDetails.driver,
       vehicleOutDate: carDetails.vehicleOutDate,
       jobInfo: jobInfo
     };

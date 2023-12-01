@@ -8,8 +8,12 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import { DialogTitle, Button, FormControl, InputLabel, Select, MenuItem, IconButton, Tooltip } from '@mui/material';
 import Box from '@mui/material/Box';
-import DataRowDialog from 'utils/DataRowDialog';
+//import DataRowDialog from 'utils/DataRowDialog';
 import { OpenInNew } from '@mui/icons-material';
+//import Alert from 'views/utilities/Alert';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
+import JobView from 'views/job/JobView';
 
 const StatusCell = ({ cell }) => (
   <Box
@@ -33,6 +37,9 @@ const AllJobs = () => {
   const [jobStatusOpen, setJobStatusOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
   const [jobInfoOpen, setJobInfoOpen] = useState(false);
+
+  const [showAlert, setShowAlert] = React.useState(false);
+  const [alertMess, setAlertMess] = React.useState('');
 
   useEffect(() => {
     fetchAllJobsData();
@@ -80,7 +87,7 @@ const AllJobs = () => {
   };
 
   const updateJobCard = async (payload) => {
-    await fetch(process.env.REACT_APP_API_URL + '/jobCard', {
+    await fetch(process.env.REACT_APP_API_URL + '/jobCard/jobStatus', {
       method: 'PUT',
       body: JSON.stringify(payload),
       headers: {
@@ -102,6 +109,8 @@ const AllJobs = () => {
       })
       .catch((err) => {
         console.log(err.message);
+        setAlertMess(err.message);
+        setShowAlert(true);
         setSelectedRow({});
         setJobStatusOpen(false);
       });
@@ -181,7 +190,12 @@ const AllJobs = () => {
       },
       {
         accessorKey: 'technicianName',
-        header: 'Technician Name',
+        header: 'Technician',
+        size: 150
+      },
+      {
+        accessorKey: 'driver',
+        header: 'Driver',
         size: 150
       },
       {
@@ -253,6 +267,13 @@ const AllJobs = () => {
 
   return (
     <div>
+      {showAlert && (
+        <Stack sx={{ width: '100%' }} spacing={2}>
+          <Alert variant="filled" severity="info" onClose={() => setShowAlert(false)}>
+            {alertMess}
+          </Alert>
+        </Stack>
+      )}
       <ThemeProvider theme={tableTheme}>
         <MaterialReactTable
           columns={columns}
@@ -376,7 +397,7 @@ const AllJobs = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <DataRowDialog open={jobInfoOpen} onClose={handleClose} dataRow={selectedRow} />
+      <JobView open={jobInfoOpen} onClose={handleClose} job={selectedRow} />
     </div>
   );
 };

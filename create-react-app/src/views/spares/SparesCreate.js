@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 import { TextField, InputLabel, Select, MenuItem, Grid, Button } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
-function SparesCreate() {
-  const [sparesDetails, setSparesDetails] = useState({});
+function SparesCreate({ data }) {
+  const [sparesDetails, setSparesDetails] = useState(data || {});
   const [sparesCategoryList, setSparesCategoryList] = useState([]);
 
   useEffect(() => {
@@ -218,7 +219,7 @@ function SparesCreate() {
       <div className="content">
         {isSparesComplete() && (
           <Button variant="contained" color="error" onClick={() => saveSparesInventory(sparesDetails)}>
-            Create Spares
+            Add/Update Spares
           </Button>
         )}
       </div>
@@ -226,4 +227,7 @@ function SparesCreate() {
   );
 }
 
+SparesCreate.propTypes = {
+  data: PropTypes.object
+};
 export default SparesCreate;
