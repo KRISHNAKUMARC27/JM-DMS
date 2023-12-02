@@ -8,6 +8,8 @@ import CarIcon from '@mui/icons-material/DirectionsCarFilled';
 import Person4Icon from '@mui/icons-material/Person4';
 import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
 import { Button } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
 
 const JobUserDetails = Loadable(lazy(() => import('views/job/JobUserDetails')));
 const JobCarDetails = Loadable(lazy(() => import('views/job/JobCarDetails')));
@@ -18,6 +20,9 @@ function JobCardCreate() {
   const [userDetails, setUserDetails] = useState({});
   const [carDetails, setCarDetails] = useState({});
   const [jobInfo, setJobInfo] = useState([...Array(1)].map(() => ({ complaints: '', completed: '', remarks: '' })));
+  const [showAlert, setShowAlert] = React.useState(false);
+  const [alertMess, setAlertMess] = React.useState('');
+  const [alertColor, setAlertColor] = React.useState('');
 
   useEffect(() => {
     return () => {
@@ -32,7 +37,7 @@ function JobCardCreate() {
   }
 
   function isCarDetailsComplete() {
-    return carDetails.vehicleRegNo && carDetails.vehicleName && carDetails.vehicleModel && carDetails.kiloMeters;
+    return carDetails.vehicleRegNo && carDetails.vehicleName && carDetails.vehicleModel && carDetails.kiloMeters && carDetails.fuelPoints;
   }
 
   function isJobInfoComplete() {
@@ -54,9 +59,19 @@ function JobCardCreate() {
       vehicleName: carDetails.vehicleName,
       vehicleModel: carDetails.vehicleModel,
       kiloMeters: carDetails.kiloMeters,
+      fuelPoints: carDetails.fuelPoints,
       technicianName: carDetails.technicianName,
       driver: carDetails.driver,
       vehicleOutDate: carDetails.vehicleOutDate,
+      cover: carDetails.cover,
+      glass: carDetails.glass,
+      dashboardAndTools: carDetails.dashboardAndTools,
+      spareWheel: carDetails.spareWheel,
+      jackeyHandles: carDetails.jackeyHandles,
+      toolKits: carDetails.toolKits,
+      penDrive: carDetails.penDrive,
+      wheelCap: carDetails.wheelCap,
+      acGrills: carDetails.acGrills,
       jobInfo: jobInfo
     };
 
@@ -80,9 +95,18 @@ function JobCardCreate() {
       })
       .then((data) => {
         console.log(data);
+        setAlertMess('JobCard ' + data.jobId + ' for ' + data.vehicleRegNo + ' created successfully');
+        setAlertColor('success');
+        setShowAlert(true);
+        setUserDetails({});
+        setCarDetails({});
+        setJobInfo([...Array(1)].map(() => ({ complaints: '', completed: '', remarks: '' })));
       })
       .catch((err) => {
         console.log(err.message);
+        setAlertMess(err.message);
+        setAlertColor('info');
+        setShowAlert(true);
       });
   };
 
@@ -153,6 +177,13 @@ function JobCardCreate() {
           </Button>
         )}
       </div>
+      {showAlert && (
+        <Stack sx={{ width: '100%' }} spacing={2}>
+          <Alert variant="filled" severity={alertColor} onClose={() => setShowAlert(false)}>
+            {alertMess}
+          </Alert>
+        </Stack>
+      )}
     </div>
   );
 }

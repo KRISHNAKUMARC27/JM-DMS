@@ -96,7 +96,18 @@ const JobCardUpdate = () => {
       vehicleModel: row.vehicleModel,
       kiloMeters: row.kiloMeters,
       technicianName: row.technicianName,
-      vehicleOutDate: row.vehicleOutDate
+      vehicleOutDate: row.vehicleOutDate,
+      fuelPoints: row.fuelPoints,
+      driver: row.driver,
+      cover: row.cover,
+      glass: row.glass,
+      dashboardAndTools: row.dashboardAndTools,
+      spareWheel: row.spareWheel,
+      jackeyHandles: row.jackeyHandles,
+      toolKits: row.toolKits,
+      penDrive: row.penDrive,
+      wheelCap: row.wheelCap,
+      acGrills: row.acGrills
     };
     let userInfo = {
       ownerName: row.ownerName,
@@ -115,9 +126,7 @@ const JobCardUpdate = () => {
   }
 
   function isCarDetailsComplete() {
-    return (
-      carDetails.vehicleRegNo && carDetails.vehicleName && carDetails.vehicleModel && carDetails.kiloMeters && carDetails.technicianName
-    );
+    return carDetails.vehicleRegNo && carDetails.vehicleName && carDetails.vehicleModel && carDetails.kiloMeters && carDetails.fuelPoints;
   }
 
   function isJobInfoComplete() {
@@ -143,6 +152,7 @@ const JobCardUpdate = () => {
       id: selectedRow.id,
       jobId: selectedRow.jobId,
       jobStatus: selectedRow.jobStatus,
+      jobCreationDate: selectedRow.jobCreationDate,
       ownerName: userDetails.ownerName,
       ownerAddress: userDetails.ownerAddress,
       ownerPhoneNumber: userDetails.ownerPhoneNumber,
@@ -150,7 +160,19 @@ const JobCardUpdate = () => {
       vehicleName: carDetails.vehicleName,
       vehicleModel: carDetails.vehicleModel,
       kiloMeters: carDetails.kiloMeters,
+      fuelPoints: carDetails.fuelPoints,
       technicianName: carDetails.technicianName,
+      driver: carDetails.driver,
+      vehicleOutDate: carDetails.vehicleOutDate,
+      cover: carDetails.cover,
+      glass: carDetails.glass,
+      dashboardAndTools: carDetails.dashboardAndTools,
+      spareWheel: carDetails.spareWheel,
+      jackeyHandles: carDetails.jackeyHandles,
+      toolKits: carDetails.toolKits,
+      penDrive: carDetails.penDrive,
+      wheelCap: carDetails.wheelCap,
+      acGrills: carDetails.acGrills,
       //vehicleOutDate: carDetails.vehicleOutDate,
       jobInfo: jobInfo
     };

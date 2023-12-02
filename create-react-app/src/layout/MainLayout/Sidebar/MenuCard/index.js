@@ -2,22 +2,10 @@ import PropTypes from 'prop-types';
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
-import {
-  Avatar,
-  Card,
-  CardContent,
-  Grid,
-  LinearProgress,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Typography,
-  linearProgressClasses
-} from '@mui/material';
+import { Card, Grid, LinearProgress, Typography, linearProgressClasses } from '@mui/material';
 
 // assets
-import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
+//import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
 
 // styles
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
@@ -82,11 +70,11 @@ LinearProgressWithLabel.propTypes = {
 // ==============================|| SIDEBAR MENU Card ||============================== //
 
 const MenuCard = () => {
-  const theme = useTheme();
+  //const theme = useTheme();
 
   return (
     <CardStyle>
-      <CardContent sx={{ p: 2 }}>
+      {/* <CardContent sx={{ p: 2 }}>
         <List sx={{ p: 0, m: 0 }}>
           <ListItem alignItems="flex-start" disableGutters sx={{ p: 0 }}>
             <ListItemAvatar sx={{ mt: 0 }}>
@@ -117,7 +105,7 @@ const MenuCard = () => {
           </ListItem>
         </List>
         <LinearProgressWithLabel value={80} />
-      </CardContent>
+      </CardContent> */}
     </CardStyle>
   );
 };

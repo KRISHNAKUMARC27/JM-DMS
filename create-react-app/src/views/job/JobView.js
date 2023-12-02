@@ -11,8 +11,11 @@ import {
   Button,
   createTheme,
   ThemeProvider,
-  useTheme
+  useTheme,
+  IconButton,
+  Tooltip
 } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
 import { MaterialReactTable } from 'material-react-table';
 
 import PropTypes from 'prop-types';
@@ -39,6 +42,30 @@ function JobView({ open, onClose, job }) {
       })
       .then((data) => {
         setJobSpares(data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
+  const downloadJobCardPDF = () => {
+    fetch(process.env.REACT_APP_API_URL + '/jobCard/pdf/' + job.id)
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || response.statusText);
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.setAttribute('download', job.jobId + '_' + job.vehicleRegNo + '.pdf'); // Use the filename you wish
+        //link.setAttribute('download', response.headers.get('Content-Disposition').split('filename=')[1] || 'download.pdf');
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
       })
       .catch((err) => {
         console.log(err.message);
@@ -141,8 +168,15 @@ function JobView({ open, onClose, job }) {
 
   return (
     <Dialog open={open} onClose={onClose} aria-labelledby="data-row-dialog-title" fullWidth maxWidth="lg">
-      <DialogTitle variant="h4" id="data-row-dialog-title">
-        <Typography variant="h4">{'JobCard: ' + job.jobId + ' VehicleNo.: ' + job.vehicleRegNo}</Typography>
+      <DialogTitle id="data-row-dialog-title">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <Typography variant="h4">{'JobCard: ' + job.jobId + ' VehicleNo.: ' + job.vehicleRegNo}</Typography>
+          <Tooltip title="Download Jobcard">
+            <IconButton onClick={downloadJobCardPDF} color="primary">
+              <DownloadIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
       </DialogTitle>
 
       <DialogContent dividers style={{ backgroundColor: 'white', color: 'black' }}>

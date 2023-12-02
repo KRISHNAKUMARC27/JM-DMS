@@ -262,8 +262,8 @@ const AllJobs = () => {
     [globalTheme]
   );
   const gradientAngle = 195;
-  const color1 = '#e2d7d5';
-  const color2 = '#4f4563';
+  const color1 = '#fff';
+  const color2 = '#c38b81';
 
   return (
     <div>
