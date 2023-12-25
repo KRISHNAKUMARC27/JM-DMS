@@ -204,7 +204,7 @@ function JobView({ open, onClose, job }) {
                   }}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={8}>
                 <TextField
                   label="Owner Address"
                   fullWidth
@@ -212,6 +212,18 @@ function JobView({ open, onClose, job }) {
                   multiline
                   variant="outlined"
                   value={job.ownerAddress || ''}
+                  InputProps={{
+                    readOnly: true
+                  }}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  label="Owner Email"
+                  fullWidth
+                  margin="dense"
+                  variant="outlined"
+                  value={job.ownerEmailId || ''}
                   InputProps={{
                     readOnly: true
                   }}

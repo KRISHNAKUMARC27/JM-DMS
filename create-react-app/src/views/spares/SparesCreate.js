@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 import { TextField, InputLabel, Select, MenuItem, Grid, Button } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
-
-function SparesCreate({ data }) {
+function SparesCreate({ data, setSparesUpdateOpen, fetchAllSparesData }) {
   const [sparesDetails, setSparesDetails] = useState(data || {});
   const [sparesCategoryList, setSparesCategoryList] = useState([]);
 
@@ -17,6 +16,10 @@ function SparesCreate({ data }) {
       setSparesCategoryList([]);
     };
   }, []);
+
+  useEffect(() => {
+    setSparesDetails(data);
+  }, [data]);
 
   const fetchAllSparesCategoryListData = () => {
     fetch(process.env.REACT_APP_API_URL + '/spares/sparesCategory')
@@ -64,6 +67,8 @@ function SparesCreate({ data }) {
         return response.json();
       })
       .then((data) => {
+        fetchAllSparesData();
+        setSparesUpdateOpen(false);
         console.log(data);
       })
       .catch((err) => {
@@ -88,17 +93,20 @@ function SparesCreate({ data }) {
     setSparesDetails(updatedData);
   };
   const handleQtyChange = (event) => {
-    const qty = parseFloat(event.target.value) || 0;
-    const amount = qty * (parseFloat(sparesDetails.sellRate) || 0);
-    const updatedData = { ...sparesDetails, qty: qty, amount: amount };
+    const qty = event.target.value; // Keep as string to allow decimal input
+    const amount = parseFloat(qty) * (parseFloat(sparesDetails.sellRate) || 0);
+    const roundedAmount = parseFloat(amount.toFixed(2)); // rounding to 2 decimal places
+    const updatedData = { ...sparesDetails, qty: qty, amount: isNaN(roundedAmount) ? '' : roundedAmount };
     setSparesDetails(updatedData);
   };
   const handleSellRateChange = (event) => {
-    const sellRate = parseFloat(event.target.value) || 0;
-    const amount = sellRate * (parseFloat(sparesDetails.qty) || 0);
-    const updatedData = { ...sparesDetails, sellRate: sellRate, amount: amount };
+    const sellRate = event.target.value; // Keep as string to allow decimal input
+    const amount = (parseFloat(sellRate) || 0) * parseFloat(sparesDetails.qty || 0);
+    const roundedAmount = parseFloat(amount.toFixed(2)); // rounding to 2 decimal places
+    const updatedData = { ...sparesDetails, sellRate: sellRate, amount: isNaN(roundedAmount) ? '' : roundedAmount };
     setSparesDetails(updatedData);
   };
+
   // const handleAmountChange = (event) => {
   //   const updatedData = { ...sparesDetails, amount: event.target.value };
   //   setSparesDetails(updatedData);
@@ -228,6 +236,8 @@ function SparesCreate({ data }) {
 }
 
 SparesCreate.propTypes = {
-  data: PropTypes.object
+  data: PropTypes.object,
+  setSparesUpdateOpen: PropTypes.func,
+  fetchAllSparesData: PropTypes.func
 };
 export default SparesCreate;

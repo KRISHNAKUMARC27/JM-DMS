@@ -112,7 +112,8 @@ const JobCardUpdate = () => {
     let userInfo = {
       ownerName: row.ownerName,
       ownerAddress: row.ownerAddress,
-      ownerPhoneNumber: row.ownerPhoneNumber
+      ownerPhoneNumber: row.ownerPhoneNumber,
+      ownerEmailId: row.ownerEmailId
     };
     setSelectedRow(row);
     setUserDetails(userInfo);
@@ -156,6 +157,7 @@ const JobCardUpdate = () => {
       ownerName: userDetails.ownerName,
       ownerAddress: userDetails.ownerAddress,
       ownerPhoneNumber: userDetails.ownerPhoneNumber,
+      ownerEmailId: userDetails.ownerEmailId,
       vehicleRegNo: carDetails.vehicleRegNo,
       vehicleName: carDetails.vehicleName,
       vehicleModel: carDetails.vehicleModel,

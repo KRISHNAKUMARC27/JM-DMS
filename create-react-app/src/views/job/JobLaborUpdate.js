@@ -33,64 +33,66 @@ const JobLaborUpdate = ({ data, updateData }) => {
       <MainCard title="Job Labor Information">
         <Grid container direction="row" spacing={gridSpacing}>
           <Grid item xs={12}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Labour</TableCell>
-                  <TableCell>Quantity</TableCell>
-                  <TableCell>Rate</TableCell>
-                  <TableCell>Amount</TableCell>
-                  <TableCell>Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data.map((row, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      <TextField
-                        fullWidth
-                        value={row?.sparesAndLabour || ''}
-                        onChange={(e) => handleInputChange(index, 'sparesAndLabour', e.target.value)}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        fullWidth
-                        value={row?.qty || ''}
-                        onChange={(e) => {
-                          handleInputChange(index, 'qty', e.target.value);
-                          handleInputChange(index, 'amount', e.target.value * row?.rate);
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        fullWidth
-                        value={row?.rate || ''}
-                        onChange={(e) => {
-                          handleInputChange(index, 'rate', e.target.value);
-                          handleInputChange(index, 'amount', e.target.value * row?.qty);
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        fullWidth
-                        value={row?.amount || ''}
-                        onChange={(e) => {
-                          handleInputChange(index, 'amount', e.target.value);
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Button variant="contained" color="error" onClick={() => handleRowDelete(index)}>
-                        Delete
-                      </Button>
-                    </TableCell>
+            <div style={{ overflowX: 'auto' }}>
+              <Table style={{ minWidth: 1000 }}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Labour</TableCell>
+                    <TableCell>Quantity</TableCell>
+                    <TableCell>Rate</TableCell>
+                    <TableCell>Amount</TableCell>
+                    <TableCell>Action</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHead>
+                <TableBody>
+                  {data.map((row, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <TextField
+                          fullWidth
+                          value={row?.sparesAndLabour || ''}
+                          onChange={(e) => handleInputChange(index, 'sparesAndLabour', e.target.value)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          fullWidth
+                          value={row?.qty || ''}
+                          onChange={(e) => {
+                            handleInputChange(index, 'qty', e.target.value);
+                            handleInputChange(index, 'amount', e.target.value * row?.rate);
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          fullWidth
+                          value={row?.rate || ''}
+                          onChange={(e) => {
+                            handleInputChange(index, 'rate', e.target.value);
+                            handleInputChange(index, 'amount', e.target.value * row?.qty);
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          fullWidth
+                          value={row?.amount || ''}
+                          onChange={(e) => {
+                            handleInputChange(index, 'amount', e.target.value);
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Button variant="contained" color="error" onClick={() => handleRowDelete(index)}>
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
             <Grid item xs={12}>
               <br></br>
               <Button variant="contained" color="error" onClick={addAdditionalRows}>

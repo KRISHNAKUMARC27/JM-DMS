@@ -72,7 +72,7 @@ const JobCarDetails = ({ data, updateData }) => {
     <>
       <MainCard title="Job Card Vehicle Details">
         <Grid container direction="row" spacing={gridSpacing}>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <TextField
               label="Vehicle Reg. No."
               required
@@ -81,10 +81,10 @@ const JobCarDetails = ({ data, updateData }) => {
               onChange={handleVehicleRegNoChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <TextField label="Vehicle Name" required variant="outlined" value={data.vehicleName || ''} onChange={handleVehicleNameChange} />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <TextField
               label="Vehicle Model"
               required
@@ -93,16 +93,16 @@ const JobCarDetails = ({ data, updateData }) => {
               onChange={handleVehicleModelChange}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <TextField label="Vehicle K.Ms" required variant="outlined" value={data.kiloMeters || ''} onChange={handleKMsChange} />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <TextField label="Fuel Points" required variant="outlined" value={data.fuelPoints || ''} onChange={handleFuelPointsChange} />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <TextField label="Technician Name" variant="outlined" value={data.technicianName || ''} onChange={handleTechnicianNameChange} />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12}>
             <Table>
               <TableHead>
                 <TableRow>
@@ -125,10 +125,10 @@ const JobCarDetails = ({ data, updateData }) => {
               </TableBody>
             </Table>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <TextField label="Driver Name" variant="outlined" value={data.driver || ''} onChange={handleDriverChange} />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <TextField
               label="Vehicle Out Date"
               variant="outlined"

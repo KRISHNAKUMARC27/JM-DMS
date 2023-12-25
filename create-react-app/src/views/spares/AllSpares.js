@@ -206,6 +206,7 @@ const AllSpares = () => {
               <Tooltip arrow placement="left" title="Update Spares Info">
                 <IconButton
                   onClick={() => {
+                    setSparesUpdateOpen(false);
                     setSparesDetails(row.original);
                     setSparesUpdateOpen(true);
                   }}
@@ -229,7 +230,7 @@ const AllSpares = () => {
                 <Typography variant="h2">{'Updating Spares: ' + sparesDetails.desc}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <SparesCreate data={sparesDetails} />
+                <SparesCreate data={sparesDetails} setSparesUpdateOpen={setSparesUpdateOpen} fetchAllSparesData={fetchAllSparesData} />
               </Grid>
             </Grid>
           )}

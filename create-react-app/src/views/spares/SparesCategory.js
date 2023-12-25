@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react';
 
-import { Table, TableBody, TableCell, TableHead, TableRow, Button, TextField, Grid } from '@mui/material';
+import { Table, TableBody, TableCell, TableHead, TableRow, Button, TextField, Grid, IconButton, Tooltip } from '@mui/material';
+import { Edit, Delete } from '@mui/icons-material';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
 
 function SparesCategory() {
   const [sparesCategory, setSparesCategory] = useState({});
   const [sparesCategoryList, setSparesCategoryList] = useState([]);
+  const [oldCategory, setOldCategory] = useState('');
+  const [newCategory, setNewCategory] = useState('');
+  const [showAlert, setShowAlert] = React.useState(false);
+  const [alertMess, setAlertMess] = React.useState('');
+  const [alertColor, setAlertColor] = React.useState('');
 
   useEffect(() => {
     fetchAllSparesCategoryListData();
@@ -61,16 +69,89 @@ function SparesCategory() {
         return response.json();
       })
       .then((data) => {
+        setAlertMess('SparesCategory ' + data.category + ' created successfully');
+        setAlertColor('success');
+        setShowAlert(true);
+        setSparesCategory({});
+        fetchAllSparesCategoryListData();
         console.log(data);
       })
       .catch((err) => {
-        console.log(err.message);
+        setAlertMess(err.message);
+        setAlertColor('info');
+        setShowAlert(true);
       });
   };
 
   const handleCategoryChange = (event) => {
     const updatedData = { ...sparesCategory, category: event.target.value };
     setSparesCategory(updatedData);
+  };
+
+  const handleRowDelete = async (rowIndex) => {
+    await fetch(process.env.REACT_APP_API_URL + '/spares/sparesCategory/' + rowIndex, {
+      method: 'DELETE',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      }
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || response.statusText);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setAlertMess('SparesCategory ' + data.category + ' deleted successfully');
+        setAlertColor('success');
+        setShowAlert(true);
+        fetchAllSparesCategoryListData();
+      })
+      .catch((err) => {
+        setAlertMess(err.message);
+        setAlertColor('info');
+        setShowAlert(true);
+      });
+  };
+
+  const handleInputChange = (oldValue, newValue, index, column) => {
+    const newRows = [...sparesCategoryList];
+    newRows[index][column] = newValue;
+    setSparesCategoryList(newRows);
+    setOldCategory(oldValue);
+    setNewCategory(newValue);
+  };
+
+  const updateSparesCategory = () => {
+    fetch(process.env.REACT_APP_API_URL + '/spares/sparesCategory/' + oldCategory + '/' + newCategory, {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      }
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || response.statusText);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setAlertMess('SparesCategory ' + data.category + ' updated successfully');
+        setAlertColor('success');
+        setShowAlert(true);
+        setOldCategory('');
+        setNewCategory('');
+        fetchAllSparesCategoryListData();
+      })
+      .catch((err) => {
+        setAlertMess(err.message);
+        setAlertColor('info');
+        setShowAlert(true);
+        setOldCategory('');
+        setNewCategory('');
+      });
   };
 
   return (
@@ -98,21 +179,66 @@ function SparesCategory() {
             </div>
           </Grid>
           <Grid item xs={12}>
-            <Grid item xs={3}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Spares Category</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {sparesCategoryList.map((row, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{row?.category}</TableCell>
+            {showAlert && (
+              <Stack sx={{ width: '100%' }} spacing={2}>
+                <Alert variant="filled" severity={alertColor} onClose={() => setShowAlert(false)}>
+                  {alertMess}
+                </Alert>
+              </Stack>
+            )}
+            <Grid item xs={12}>
+              <div style={{ overflowX: 'auto' }}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Spares Category</TableCell>
+                      <TableCell>Spares Count</TableCell>
+                      <TableCell>Action</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHead>
+                  <TableBody>
+                    {sparesCategoryList.map((row, index) => (
+                      <TableRow key={index}>
+                        {/* <TableCell>{row?.category}</TableCell> */}
+                        <TableCell>
+                          <TextField
+                            variant="outlined"
+                            value={row?.category || ''}
+                            onChange={(e) => handleInputChange(row.category, e.target.value, index, 'category')}
+                          />
+                        </TableCell>
+                        <TableCell>{row?.sparesCount}</TableCell>
+                        <TableCell>
+                          {/* <Button variant="contained" color="error" onClick={() => handleRowDelete(row.id)}>
+                            Delete
+                          </Button>
+                          <Button variant="contained" color="error" onClick={() => updateSparesCategory()}>
+                            Update
+                          </Button> */}
+                          <Tooltip arrow placement="right" title="Modify">
+                            <IconButton
+                              onClick={() => {
+                                updateSparesCategory();
+                              }}
+                            >
+                              <Edit />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip arrow placement="right" title="Delete">
+                            <IconButton
+                              onClick={() => {
+                                handleRowDelete(row.id);
+                              }}
+                            >
+                              <Delete />
+                            </IconButton>
+                          </Tooltip>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </Grid>
           </Grid>
         </Grid>

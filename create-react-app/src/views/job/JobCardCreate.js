@@ -55,6 +55,7 @@ function JobCardCreate() {
       ownerName: userDetails.ownerName,
       ownerAddress: userDetails.ownerAddress,
       ownerPhoneNumber: userDetails.ownerPhoneNumber,
+      ownerEmailId: userDetails.ownerEmailId,
       vehicleRegNo: carDetails.vehicleRegNo,
       vehicleName: carDetails.vehicleName,
       vehicleModel: carDetails.vehicleModel,

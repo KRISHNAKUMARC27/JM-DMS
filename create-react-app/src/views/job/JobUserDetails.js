@@ -20,6 +20,10 @@ const JobUserDetails = ({ data, updateData }) => {
     const updatedData = { ...data, ownerPhoneNumber: event.target.value };
     updateData(updatedData);
   };
+  const handleOwnerEmailIdChange = (event) => {
+    const updatedData = { ...data, ownerEmailId: event.target.value };
+    updateData(updatedData);
+  };
   return (
     <>
       <MainCard title="Job Card User Details">
@@ -46,6 +50,17 @@ const JobUserDetails = ({ data, updateData }) => {
               variant="outlined"
               value={data.ownerAddress || ''}
               onChange={handleOwnerAddressChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Owner EmailID"
+              fullWidth
+              margin="dense"
+              multiline
+              variant="outlined"
+              value={data.ownerEmailId || ''}
+              onChange={handleOwnerEmailIdChange}
             />
           </Grid>
         </Grid>

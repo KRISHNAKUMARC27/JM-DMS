@@ -207,6 +207,11 @@ const AllJobs = () => {
         accessorKey: 'ownerAddress',
         header: 'Address',
         size: 150
+      },
+      {
+        accessorKey: 'ownerEmailId',
+        header: 'Email',
+        size: 150
       }
     ],
     []
