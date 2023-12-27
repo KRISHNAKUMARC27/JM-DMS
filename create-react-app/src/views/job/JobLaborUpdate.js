@@ -60,7 +60,7 @@ const JobLaborUpdate = ({ data, updateData }) => {
                           value={row?.qty || ''}
                           onChange={(e) => {
                             handleInputChange(index, 'qty', e.target.value);
-                            handleInputChange(index, 'amount', e.target.value * row?.rate);
+                            handleInputChange(index, 'amount', e.target.value * (row?.rate || 0));
                           }}
                         />
                       </TableCell>
@@ -70,7 +70,7 @@ const JobLaborUpdate = ({ data, updateData }) => {
                           value={row?.rate || ''}
                           onChange={(e) => {
                             handleInputChange(index, 'rate', e.target.value);
-                            handleInputChange(index, 'amount', e.target.value * row?.qty);
+                            handleInputChange(index, 'amount', e.target.value * (row?.qty || 0));
                           }}
                         />
                       </TableCell>

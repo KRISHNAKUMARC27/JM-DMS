@@ -215,7 +215,7 @@ function SparesCategory() {
                           <Button variant="contained" color="error" onClick={() => updateSparesCategory()}>
                             Update
                           </Button> */}
-                          <Tooltip arrow placement="right" title="Modify">
+                          <Tooltip arrow placement="right" title="Update">
                             <IconButton
                               onClick={() => {
                                 updateSparesCategory();

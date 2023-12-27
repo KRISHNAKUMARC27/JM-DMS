@@ -83,8 +83,8 @@ function SparesEvents() {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Spares Category</TableCell>
-                      <TableCell>Spares Count</TableCell>
+                      <TableCell>Spares Events</TableCell>
+                      <TableCell>Event Time</TableCell>
                       <TableCell>Action</TableCell>
                     </TableRow>
                   </TableHead>

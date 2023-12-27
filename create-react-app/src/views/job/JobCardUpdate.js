@@ -33,7 +33,7 @@ const JobCardUpdate = () => {
     [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' }))
   );
   const [jobLaborInfo, setJobLaborInfo] = useState(
-    [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' }))
+    [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '0', rate: '0', amount: '0' }))
   );
   const [jobSparesUpdateOpen, setJobSparesUpdateOpen] = useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
@@ -140,12 +140,11 @@ const JobCardUpdate = () => {
   }
 
   function isJobSparesUpdateComplete() {
-    return (
-      jobSparesInfo[0]?.sparesAndLabour && jobLaborInfo[0]?.sparesAndLabour
-      // jobSparesCost?.totalSparesValue &&
-      // jobSparesCost?.totalLabourValue &&
-      // jobSparesCost?.grandTotal
-    );
+    //return true;
+    return jobSparesInfo[0]?.sparesAndLabour || jobLaborInfo[0]?.sparesAndLabour;
+    // jobSparesCost?.totalSparesValue &&
+    // jobSparesCost?.totalLabourValue &&
+    // jobSparesCost?.grandTotal
   }
 
   const submitJobCard = () => {
@@ -295,7 +294,7 @@ const JobCardUpdate = () => {
     setJobSparesUpdateOpen(false);
     setSelectedRowSpares({});
     setJobSparesInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' })));
-    setJobLaborInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' })));
+    setJobLaborInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '0', rate: '0', amount: '0' })));
     setJobSparesCost({});
   };
   //should be memoized or stable

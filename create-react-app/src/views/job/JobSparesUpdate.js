@@ -28,7 +28,7 @@ const JobSparesUpdate = ({ data, updateData }) => {
 
   React.useEffect(() => {
     fetchAllSparesCategoryListData();
-    //fetchAllSparesData();
+    fetchAllSparesData();
     return () => {
       setSparesCategoryList([]);
       setOptions([]);
@@ -53,22 +53,22 @@ const JobSparesUpdate = ({ data, updateData }) => {
       });
   };
 
-  // const fetchAllSparesData = () => {
-  //   fetch(process.env.REACT_APP_API_URL + '/spares')
-  //     .then(async (response) => {
-  //       if (!response.ok) {
-  //         const errorText = await response.text();
-  //         throw new Error(errorText || response.statusText);
-  //       }
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       setAllSpares(data);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err.message);
-  //     });
-  // };
+  const fetchAllSparesData = () => {
+    fetch(process.env.REACT_APP_API_URL + '/spares')
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || response.statusText);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setAllSpares(data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
 
   const fetchOptions = async (value) => {
     await fetch(process.env.REACT_APP_API_URL + '/spares/findSparesInventoryWithFilter', {
@@ -177,6 +177,7 @@ const JobSparesUpdate = ({ data, updateData }) => {
                           style={{ width: 300 }}
                           //inputValue={row?.sparesAndLabour || ''}
                           //onInputChange={handleInputChangeFilter}
+                          //value={row || ''}
                           value={allSpares.find((option) => option.desc === row.sparesAndLabour) || null}
                           isOptionEqualToValue={(option, value) => option.id === value.id}
                           onChange={(event, newValue) => {

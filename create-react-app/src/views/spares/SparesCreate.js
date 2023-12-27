@@ -4,9 +4,14 @@ import PropTypes from 'prop-types';
 import { TextField, InputLabel, Select, MenuItem, Grid, Button } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
 function SparesCreate({ data, setSparesUpdateOpen, fetchAllSparesData }) {
   const [sparesDetails, setSparesDetails] = useState(data || {});
   const [sparesCategoryList, setSparesCategoryList] = useState([]);
+  const [showAlert, setShowAlert] = React.useState(false);
+  const [alertMess, setAlertMess] = React.useState('');
+  const [alertColor, setAlertColor] = React.useState('');
 
   useEffect(() => {
     fetchAllSparesCategoryListData();
@@ -18,7 +23,7 @@ function SparesCreate({ data, setSparesUpdateOpen, fetchAllSparesData }) {
   }, []);
 
   useEffect(() => {
-    setSparesDetails(data);
+    setSparesDetails(data || {});
   }, [data]);
 
   const fetchAllSparesCategoryListData = () => {
@@ -43,10 +48,14 @@ function SparesCreate({ data, setSparesUpdateOpen, fetchAllSparesData }) {
       sparesDetails.category &&
       sparesDetails.partNumber &&
       sparesDetails.desc &&
-      sparesDetails.purchaseRate &&
-      sparesDetails.qty &&
-      sparesDetails.sellRate &&
-      sparesDetails.amount &&
+      sparesDetails.purchaseRate !== null &&
+      sparesDetails.purchaseRate !== undefined &&
+      sparesDetails.qty !== null &&
+      sparesDetails.qty !== undefined &&
+      sparesDetails.sellRate !== null &&
+      sparesDetails.sellRate !== undefined &&
+      sparesDetails.amount !== null &&
+      sparesDetails.amount !== undefined &&
       sparesDetails.minThresh
     );
   }
@@ -67,12 +76,22 @@ function SparesCreate({ data, setSparesUpdateOpen, fetchAllSparesData }) {
         return response.json();
       })
       .then((data) => {
-        fetchAllSparesData();
-        setSparesUpdateOpen(false);
+        if (fetchAllSparesData) {
+          fetchAllSparesData();
+        }
+        if (setSparesUpdateOpen) {
+          setSparesUpdateOpen(false);
+        }
+        setAlertMess(data.desc + ' added successfully ');
+        setAlertColor('success');
+        setShowAlert(true);
         console.log(data);
       })
       .catch((err) => {
         console.log(err.message);
+        setAlertMess(err.message);
+        setAlertColor('info');
+        setShowAlert(true);
       });
   };
 
@@ -231,6 +250,13 @@ function SparesCreate({ data, setSparesUpdateOpen, fetchAllSparesData }) {
           </Button>
         )}
       </div>
+      {showAlert && (
+        <Stack sx={{ width: '100%' }} spacing={2}>
+          <Alert variant="filled" severity={alertColor} onClose={() => setShowAlert(false)}>
+            {alertMess}
+          </Alert>
+        </Stack>
+      )}
     </div>
   );
 }
