@@ -6,13 +6,15 @@ import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography }
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
-import TotalIncomeCard from 'ui-component/cards/Skeleton/TotalIncomeCard';
+//import TotalIncomeCard from 'ui-component/cards/Skeleton/TotalIncomeCard';
 
 // assets
-import StorefrontTwoToneIcon from '@mui/icons-material/StorefrontTwoTone';
-
+//import StorefrontTwoToneIcon from '@mui/icons-material/StorefrontTwoTone';
+import EventNoteIcon from '@mui/icons-material/EventNote';
 // styles
 const CardWrapper = styled(MainCard)(({ theme }) => ({
+  backgroundColor: theme.palette.secondary.dark,
+  color: theme.palette.secondary.light,
   overflow: 'hidden',
   position: 'relative',
   '&:after': {
@@ -20,7 +22,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
     position: 'absolute',
     width: 210,
     height: 210,
-    background: `linear-gradient(210.04deg, ${theme.palette.warning.dark} -50.94%, rgba(144, 202, 249, 0) 83.49%)`,
+    background: `linear-gradient(210.04deg, ${theme.palette.primary[200]} -50.94%, rgba(144, 202, 249, 0) 83.49%)`,
     borderRadius: '50%',
     top: -30,
     right: -180
@@ -30,7 +32,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
     position: 'absolute',
     width: 210,
     height: 210,
-    background: `linear-gradient(140.9deg, ${theme.palette.warning.dark} -14.02%, rgba(144, 202, 249, 0) 70.50%)`,
+    background: `linear-gradient(140.9deg, ${theme.palette.primary[200]} -14.02%, rgba(144, 202, 249, 0) 77.58%)`,
     borderRadius: '50%',
     top: -160,
     right: -130
@@ -39,61 +41,60 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 // ==============================|| DASHBOARD - TOTAL INCOME LIGHT CARD ||============================== //
 
-const TotalIncomeLightCard = ({ isLoading }) => {
+const TotalIncomeLightCard = ({ totalJobCards, name }) => {
   const theme = useTheme();
 
   return (
     <>
-      {isLoading ? (
+      {/* {isLoading ? (
         <TotalIncomeCard />
-      ) : (
-        <CardWrapper border={false} content={false}>
-          <Box sx={{ p: 2 }}>
-            <List sx={{ py: 0 }}>
-              <ListItem alignItems="center" disableGutters sx={{ py: 0 }}>
-                <ListItemAvatar>
-                  <Avatar
-                    variant="rounded"
-                    sx={{
-                      ...theme.typography.commonAvatar,
-                      ...theme.typography.largeAvatar,
-                      backgroundColor: theme.palette.warning.light,
-                      color: theme.palette.warning.dark
-                    }}
-                  >
-                    <StorefrontTwoToneIcon fontSize="inherit" />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
+      ) : ( */}
+      <CardWrapper border={false} content={false}>
+        <Box sx={{ p: 2 }}>
+          <List sx={{ py: 0 }}>
+            <ListItem alignItems="center" disableGutters sx={{ py: 0 }}>
+              <ListItemAvatar>
+                <Avatar
+                  variant="rounded"
                   sx={{
-                    py: 0,
-                    mt: 0.45,
-                    mb: 0.45
+                    ...theme.typography.commonAvatar,
+                    ...theme.typography.largeAvatar,
+                    backgroundColor: theme.palette.secondary[800],
+                    color: '#fff'
                   }}
-                  primary={<Typography variant="h4">$203k</Typography>}
-                  secondary={
-                    <Typography
-                      variant="subtitle2"
-                      sx={{
-                        color: theme.palette.grey[500],
-                        mt: 0.5
-                      }}
-                    >
-                      Total Income
-                    </Typography>
-                  }
-                />
-              </ListItem>
-            </List>
-          </Box>
-        </CardWrapper>
-      )}
+                >
+                  <EventNoteIcon fontSize="inherit" />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                sx={{
+                  py: 0,
+                  mt: 0.45,
+                  mb: 0.45
+                }}
+                primary={
+                  <Typography variant="h4" sx={{ color: '#fff' }}>
+                    {totalJobCards}
+                  </Typography>
+                }
+                secondary={
+                  <Typography variant="subtitle2" sx={{ color: 'secondary.light', mt: 0.25 }}>
+                    {name}
+                  </Typography>
+                }
+              />
+            </ListItem>
+          </List>
+        </Box>
+      </CardWrapper>
+      {/* )} */}
     </>
   );
 };
 
 TotalIncomeLightCard.propTypes = {
-  isLoading: PropTypes.bool
+  totalJobCards: PropTypes.number,
+  name: PropTypes.string
 };
 
 export default TotalIncomeLightCard;

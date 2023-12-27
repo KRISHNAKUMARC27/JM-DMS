@@ -23,7 +23,7 @@ const MainRoutes = {
   children: [
     {
       path: '/',
-      element: <DashboardDefault />
+      element: <JobCardUpdate />
     },
     {
       path: 'dashboard',
