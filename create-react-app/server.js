@@ -1,7 +1,7 @@
 const express = require('express');
 const http = require('http');
 const path = require('path');
-const os = require('os'); // Add the os module to get network interfaces
+const os = require('os');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
@@ -36,6 +36,7 @@ function getLocalIpAddress() {
 
 const ipAddress = getLocalIpAddress();
 
+// Listening on all network interfaces to make it accessible on the local network
 http.createServer(app).listen(4001, '0.0.0.0', () => {
   console.log(`HTTP server running at http://${ipAddress}:4001`);
 });

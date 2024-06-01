@@ -15,6 +15,9 @@ const AllSpares = Loadable(lazy(() => import('views/spares/AllSpares')));
 const CreateSpares = Loadable(lazy(() => import('views/spares/SparesCreate')));
 const SparesCategory = Loadable(lazy(() => import('views/spares/SparesCategory')));
 
+const AllLabor = Loadable(lazy(() => import('views/labor/AllLabor')));
+const CreateLabor = Loadable(lazy(() => import('views/labor/LaborCreate')));
+const LaborCategory = Loadable(lazy(() => import('views/labor/LaborCategory')));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -85,6 +88,33 @@ const MainRoutes = {
         {
           path: 'sparesCategory',
           element: <SparesCategory />
+        }
+      ]
+    },
+    {
+      path: 'labor',
+      children: [
+        {
+          path: 'table',
+          element: <AllLabor />
+        }
+      ]
+    },
+    {
+      path: 'labor',
+      children: [
+        {
+          path: 'createLabor',
+          element: <CreateLabor />
+        }
+      ]
+    },
+    {
+      path: 'labor',
+      children: [
+        {
+          path: 'laborCategory',
+          element: <LaborCategory />
         }
       ]
     }
