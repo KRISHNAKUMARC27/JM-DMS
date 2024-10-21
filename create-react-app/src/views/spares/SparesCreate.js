@@ -232,7 +232,7 @@ function SparesCreate({ data, setSparesUpdateOpen, fetchAllSparesData }) {
             <TextField label="Rack/Bin" variant="standard" fullWidth value={sparesDetails.rack || ''} onChange={handleRackChange} />
           </Grid>
           <Grid item xs={4}>
-            <TextField label="Misc 1" variant="standard" fullWidth value={sparesDetails.misc1 || ''} onChange={handleMisc1Change} />
+            <TextField label="MRP" variant="standard" fullWidth value={sparesDetails.misc1 || ''} onChange={handleMisc1Change} />
           </Grid>
           <Grid item xs={4}>
             <TextField label="Misc 2" variant="standard" fullWidth value={sparesDetails.misc2 || ''} onChange={handleMisc2Change} />

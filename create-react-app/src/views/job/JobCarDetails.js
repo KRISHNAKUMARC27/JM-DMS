@@ -8,7 +8,7 @@ import { gridSpacing } from 'store/constant';
 
 const JobCarDetails = ({ data, updateData }) => {
   const handleVehicleRegNoChange = (event) => {
-    const updatedData = { ...data, vehicleRegNo: event.target.value };
+    const updatedData = { ...data, vehicleRegNo: event.target.value.toUpperCase() };
     updateData(updatedData);
   };
   const handleVehicleNameChange = (event) => {

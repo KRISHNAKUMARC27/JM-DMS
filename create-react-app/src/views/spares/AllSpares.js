@@ -1,6 +1,20 @@
 import React, { useMemo, useState, useEffect, lazy } from 'react';
 import { MaterialReactTable } from 'material-react-table';
-import { createTheme, ThemeProvider, useTheme, IconButton, Tooltip, Box, Typography, Grid, Divider } from '@mui/material';
+import {
+  createTheme,
+  ThemeProvider,
+  useTheme,
+  IconButton,
+  Tooltip,
+  Box,
+  Typography,
+  Grid,
+  Divider,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Button
+} from '@mui/material';
 import { Edit } from '@mui/icons-material';
 import { gridSpacing } from 'store/constant';
 import Loadable from 'ui-component/Loadable';
@@ -21,6 +35,10 @@ const AllSpares = () => {
       //setSparesCategoryList([]);
     };
   }, []);
+
+  const handleClose = () => {
+    setSparesUpdateOpen(false);
+  };
 
   const fetchAllSparesData = () => {
     fetch(process.env.REACT_APP_API_URL + '/spares')
@@ -104,7 +122,7 @@ const AllSpares = () => {
       },
       {
         accessorKey: 'misc1',
-        header: 'Misc 1',
+        header: 'MRP',
         size: 150
       },
       {
@@ -182,7 +200,7 @@ const AllSpares = () => {
   );
   const gradientAngle = 195;
   const color1 = '#e2d7d5';
-  const color2 = '#4f4563';
+  const color2 = '#d6763c';
 
   return (
     <div>
@@ -200,6 +218,9 @@ const AllSpares = () => {
               //backgroundColor: "#344767",
               background: `linear-gradient(${gradientAngle}deg, ${color1}, ${color2})`
             }
+          }}
+          initialState={{
+            pagination: { pageSize: 5 } // Set default rows per page to 5
           }}
           renderRowActions={({ row }) => (
             <Box sx={{ display: 'flex', gap: '1rem' }}>
@@ -219,23 +240,30 @@ const AllSpares = () => {
         />{' '}
       </ThemeProvider>
       <br></br>
-      <Grid container spacing={gridSpacing}>
-        <Grid item xs={12}>
-          {sparesUpdateOpen && (
-            <Grid container spacing={gridSpacing}>
-              <Grid item xs={12}>
-                <Divider />
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="h2">{'Updating Spares: ' + sparesDetails.desc}</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <SparesCreate data={sparesDetails} setSparesUpdateOpen={setSparesUpdateOpen} fetchAllSparesData={fetchAllSparesData} />
+
+      <Dialog open={sparesUpdateOpen} onClose={handleClose} aria-labelledby="data-row-dialog-title" fullWidth maxWidth="lg">
+        <DialogContent dividers style={{ backgroundColor: 'white', color: 'black' }}>
+          {' '}
+          <Grid container spacing={gridSpacing}>
+            <Grid item xs={12}>
+              <Grid container spacing={gridSpacing}>
+                <Grid item xs={12}>
+                  <Divider />
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="h2">{'Updating Spares: ' + sparesDetails.desc}</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <SparesCreate data={sparesDetails} setSparesUpdateOpen={setSparesUpdateOpen} fetchAllSparesData={fetchAllSparesData} />
+                </Grid>
               </Grid>
             </Grid>
-          )}
-        </Grid>
-      </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
       <br></br>
     </div>
   );

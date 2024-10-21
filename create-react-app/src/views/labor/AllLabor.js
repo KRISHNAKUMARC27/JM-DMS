@@ -1,6 +1,20 @@
 import React, { useMemo, useState, useEffect, lazy } from 'react';
 import { MaterialReactTable } from 'material-react-table';
-import { createTheme, ThemeProvider, useTheme, IconButton, Tooltip, Box, Typography, Grid, Divider } from '@mui/material';
+import {
+  createTheme,
+  ThemeProvider,
+  useTheme,
+  IconButton,
+  Tooltip,
+  Box,
+  Typography,
+  Grid,
+  Divider,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Button
+} from '@mui/material';
 import { Edit } from '@mui/icons-material';
 import { gridSpacing } from 'store/constant';
 import Loadable from 'ui-component/Loadable';
@@ -21,6 +35,10 @@ const AllLabor = () => {
       //setLaborCategoryList([]);
     };
   }, []);
+
+  const handleClose = () => {
+    setLaborUpdateOpen(false);
+  };
 
   const fetchAllLaborData = () => {
     fetch(process.env.REACT_APP_API_URL + '/labor')
@@ -163,23 +181,30 @@ const AllLabor = () => {
         />{' '}
       </ThemeProvider>
       <br></br>
-      <Grid container spacing={gridSpacing}>
-        <Grid item xs={12}>
-          {laborUpdateOpen && (
-            <Grid container spacing={gridSpacing}>
-              <Grid item xs={12}>
-                <Divider />
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="h2">{'Updating Labor: ' + laborDetails.desc}</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <LaborCreate data={laborDetails} setLaborUpdateOpen={setLaborUpdateOpen} fetchAllLaborData={fetchAllLaborData} />
+
+      <Dialog open={laborUpdateOpen} onClose={handleClose} aria-labelledby="data-row-dialog-title" fullWidth maxWidth="lg">
+        <DialogContent dividers style={{ backgroundColor: 'white', color: 'black' }}>
+          {' '}
+          <Grid container spacing={gridSpacing}>
+            <Grid item xs={12}>
+              <Grid container spacing={gridSpacing}>
+                <Grid item xs={12}>
+                  <Divider />
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="h2">{'Updating Labor: ' + laborDetails.desc}</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <LaborCreate data={laborDetails} setLaborUpdateOpen={setLaborUpdateOpen} fetchAllLaborData={fetchAllLaborData} />
+                </Grid>
               </Grid>
             </Grid>
-          )}
-        </Grid>
-      </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
       <br></br>
     </div>
   );

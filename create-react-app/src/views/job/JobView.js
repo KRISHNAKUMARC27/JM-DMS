@@ -12,10 +12,10 @@ import {
   createTheme,
   ThemeProvider,
   useTheme,
-  IconButton,
+  //IconButton,
   Tooltip
 } from '@mui/material';
-import DownloadIcon from '@mui/icons-material/Download';
+//import DownloadIcon from '@mui/icons-material/Download';
 import { MaterialReactTable } from 'material-react-table';
 
 import PropTypes from 'prop-types';
@@ -61,7 +61,31 @@ function JobView({ open, onClose, job }) {
         const downloadUrl = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = downloadUrl;
-        link.setAttribute('download', job.jobId + '_' + job.vehicleRegNo + '.pdf'); // Use the filename you wish
+        link.setAttribute('download', 'Job_' + job.jobId + '_' + job.vehicleRegNo + '.pdf'); // Use the filename you wish
+        //link.setAttribute('download', response.headers.get('Content-Disposition').split('filename=')[1] || 'download.pdf');
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
+  const printBillPDF = () => {
+    fetch(process.env.REACT_APP_API_URL + '/jobCard/billPdf/' + job.id)
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || response.statusText);
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.setAttribute('download', 'Bill_' + job.jobId + '_' + job.vehicleRegNo + '.pdf'); // Use the filename you wish
         //link.setAttribute('download', response.headers.get('Content-Disposition').split('filename=')[1] || 'download.pdf');
         document.body.appendChild(link);
         link.click();
@@ -172,9 +196,16 @@ function JobView({ open, onClose, job }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
           <Typography variant="h4">{'JobCard: ' + job.jobId + ' VehicleNo.: ' + job.vehicleRegNo}</Typography>
           <Tooltip title="Download Jobcard">
-            <IconButton onClick={downloadJobCardPDF} color="primary">
+            {/* <IconButton onClick={downloadJobCardPDF} color="primary">
               <DownloadIcon />
-            </IconButton>
+            </IconButton> */}
+            <Button onClick={downloadJobCardPDF}>Print Jobcard</Button>
+          </Tooltip>
+          <Tooltip title="Print Bill">
+            {/* <IconButton onClick={printBillPDF} color="primary">
+              <DownloadIcon />
+            </IconButton> */}
+            <Button onClick={printBillPDF}>Print Bill</Button>
           </Tooltip>
         </div>
       </DialogTitle>
