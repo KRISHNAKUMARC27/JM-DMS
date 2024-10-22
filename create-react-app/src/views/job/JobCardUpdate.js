@@ -43,7 +43,7 @@ const JobCardUpdate = () => {
 
   const [jobSparesCost, setJobSparesCost] = useState({});
   const [jobSparesInfo, setJobSparesInfo] = useState(
-    [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' }))
+    [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '', action: '' }))
   );
   const [jobLaborInfo, setJobLaborInfo] = useState(
     [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '0', rate: '0', amount: '0' }))
@@ -286,9 +286,10 @@ const JobCardUpdate = () => {
       })
       .then((data) => {
         console.log(data);
-        handleJobSparesClose();
+        handleClose();
       })
       .catch((err) => {
+        handleClose();
         console.log(err.message);
         setAlertMess(err.message);
         setShowAlert(true);
@@ -308,13 +309,13 @@ const JobCardUpdate = () => {
     setJobSparesCost({});
   };
 
-  const handleJobSparesClose = () => {
-    setJobSparesUpdateOpen(false);
-    setSelectedRowSpares({});
-    setJobSparesInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' })));
-    setJobLaborInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '0', rate: '0', amount: '0' })));
-    setJobSparesCost({});
-  };
+  // const handleJobSparesClose = () => {
+  //   setJobSparesUpdateOpen(false);
+  //   setSelectedRowSpares({});
+  //   setJobSparesInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' })));
+  //   setJobLaborInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '0', rate: '0', amount: '0' })));
+  //   setJobSparesCost({});
+  // };
   //should be memoized or stable
   const columns = useMemo(
     () => [
@@ -588,7 +589,7 @@ const JobCardUpdate = () => {
                     //onChange={(e) => handleGrandTotalValueChange(e.target.value)}
                   />
                 </Grid>
-                <Grid item lg={3} md={6} sm={6} xs={12}>
+                {/* <Grid item lg={3} md={6} sm={6} xs={12}>
                   {isJobSparesUpdateComplete() && (
                     <Button variant="contained" color="error" onClick={submitJobSpares}>
                       Update JobSpares
@@ -599,13 +600,27 @@ const JobCardUpdate = () => {
                   <Button variant="contained" color="error" onClick={handleJobSparesClose}>
                     Cancel Update Spares
                   </Button>
-                </Grid>
+                </Grid> */}
               </Grid>
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Close</Button>
+          {/* <Button onClick={handleClose}>Close</Button> */}
+          <Grid container spacing={gridSpacing}>
+            <Grid item lg={3} md={6} sm={6} xs={12}>
+              {isJobSparesUpdateComplete() && (
+                <Button variant="contained" color="error" onClick={submitJobSpares}>
+                  Update JobSpares
+                </Button>
+              )}
+            </Grid>
+            <Grid item lg={3} md={6} sm={6} xs={12}>
+              <Button variant="contained" color="error" onClick={handleClose}>
+                Cancel Update Spares
+              </Button>
+            </Grid>
+          </Grid>
         </DialogActions>
       </Dialog>
       {showAlert && (
