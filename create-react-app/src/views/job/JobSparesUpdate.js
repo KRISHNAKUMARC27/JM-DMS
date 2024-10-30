@@ -262,7 +262,7 @@ const JobSparesUpdate = ({ data, updateData }) => {
                             value={allSpares.find((option) => option.desc === row.sparesAndLabour) || null}
                             isOptionEqualToValue={(option, value) => option.id === value.id}
                             onChange={(event, newValue) => {
-                              console.log('new value is ' + JSON.stringify(newValue));
+                              //console.log('new value is ' + JSON.stringify(newValue));
                               //setChoosenSpares(newValue);
                               handleInputChange(row.sparesId, 'sparesAndLabour', newValue.desc);
                               handleInputChange(row.sparesId, 'rate', newValue.sellRate);
@@ -277,13 +277,14 @@ const JobSparesUpdate = ({ data, updateData }) => {
                             value={row?.qty || ''}
                             onChange={(e) => {
                               const val = e.target.value;
-
-                              // Check if the value is 0, and restrict it
-                              if (val > 0) {
-                                handleInputChange(row.sparesId, 'qty', val);
-                                handleInputChange(row.sparesId, 'amount', val * row?.rate || 0);
-                              } else {
+                              handleInputChange(row.sparesId, 'qty', val);
+                              handleInputChange(row.sparesId, 'amount', val * row?.rate || 0);
+                            }}
+                            onBlur={(e) => {
+                              const val = e.target.value;
+                              if (Number(val) <= 0) {
                                 alert('Quantity cannot be 0. Please delete the row if you want to remove the spare.');
+                                handleInputChange(row.sparesId, 'qty', ''); // Reset the value if needed
                               }
                             }}
                           />

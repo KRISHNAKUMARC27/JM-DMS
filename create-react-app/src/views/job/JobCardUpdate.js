@@ -241,11 +241,13 @@ const JobCardUpdate = () => {
   };
 
   const sumAmounts = (data) => {
-    return data.reduce((total, currentRow) => {
-      // Convert amount to a number in case it's a string, and handle any non-numeric values gracefully
-      const amount = Number(currentRow.amount) || 0;
-      return total + amount;
-    }, 0); // Start with a total of 0
+    return data
+      .filter((row) => row.action !== 'DELETE')
+      .reduce((total, currentRow) => {
+        // Convert amount to a number in case it's a string, and handle any non-numeric values gracefully
+        const amount = Number(currentRow.amount) || 0;
+        return total + amount;
+      }, 0); // Start with a total of 0
   };
 
   const submitJobSpares = () => {
@@ -623,13 +625,15 @@ const JobCardUpdate = () => {
           </Grid>
         </DialogActions>
       </Dialog>
-      {showAlert && (
-        <Stack sx={{ width: '100%' }} spacing={2}>
-          <Alert variant="filled" severity="info" onClose={() => setShowAlert(false)}>
-            {alertMess}
-          </Alert>
-        </Stack>
-      )}
+      <Dialog open={showAlert} onClose={() => setShowAlert(false)} aria-labelledby="data-row-dialog-title" fullWidth maxWidth="lg">
+        <DialogContent dividers style={{ backgroundColor: 'white', color: 'black' }}>
+          <Stack sx={{ width: '100%' }} spacing={2}>
+            <Alert variant="filled" severity="info" onClose={() => setShowAlert(false)}>
+              {alertMess}
+            </Alert>
+          </Stack>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
