@@ -122,17 +122,17 @@ const AllSpares = () => {
       },
       {
         accessorKey: 'misc1',
-        header: 'MRP',
+        header: 'Misc 1',
         size: 150
       },
       {
         accessorKey: 'misc2',
-        header: 'Misc 2',
+        header: 'Units',
         size: 150
       },
       {
         accessorKey: 'misc3',
-        header: 'Misc 3',
+        header: 'MRP',
         size: 150
       },
       {
