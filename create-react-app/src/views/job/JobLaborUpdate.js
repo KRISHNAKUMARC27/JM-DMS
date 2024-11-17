@@ -298,6 +298,7 @@ const JobLaborUpdate = ({ data, updateData }) => {
                             //setChoosenLabor(newValue);
                             handleInputChange(index, 'sparesAndLabour', newValue.desc);
                             handleInputChange(index, 'rate', newValue.amount);
+                            handleInputChange(index, 'amount', newValue.amount * row?.qty || 0);
                             handleInputChange(index, 'sparesId', newValue.id);
                           }}
                           renderInput={(params) => <TextField {...params} label="Search Labor" />}

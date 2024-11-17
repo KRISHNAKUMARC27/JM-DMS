@@ -29,6 +29,7 @@ const JobCarDetails = Loadable(lazy(() => import('views/job/JobCarDetails')));
 const JobInfo = Loadable(lazy(() => import('views/job/JobInfo')));
 const JobSparesUpdate = Loadable(lazy(() => import('views/job/JobSparesUpdate')));
 const JobLaborUpdate = Loadable(lazy(() => import('views/job/JobLaborUpdate')));
+const JobConsumablesUpdate = Loadable(lazy(() => import('views/job/JobConsumablesUpdate')));
 
 const JobCardUpdate = () => {
   const [data, setData] = useState([]);
@@ -44,6 +45,9 @@ const JobCardUpdate = () => {
   const [jobSparesCost, setJobSparesCost] = useState({});
   const [jobSparesInfo, setJobSparesInfo] = useState(
     [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '', action: '' }))
+  );
+  const [jobConsumablesInfo, setJobConsumablesInfo] = useState(
+    [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' }))
   );
   const [jobLaborInfo, setJobLaborInfo] = useState(
     [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '0', rate: '0', amount: '0' }))
@@ -88,9 +92,11 @@ const JobCardUpdate = () => {
       })
       .then((data) => {
         setJobSparesInfo(data.jobSparesInfo);
+        setJobConsumablesInfo(data.jobConsumablesInfo);
         setJobLaborInfo(data.jobLaborInfo);
         let sparesCost = {
           totalSparesValue: data.totalSparesValue,
+          totalConsumablesValue: data.totalConsumablesValue,
           totalLabourValue: data.totalLabourValue,
           grandTotal: data.grandTotal
         };
@@ -153,11 +159,7 @@ const JobCardUpdate = () => {
   }
 
   function isJobSparesUpdateComplete() {
-    //return true;
-    return jobSparesInfo[0]?.sparesAndLabour || jobLaborInfo[0]?.sparesAndLabour;
-    // jobSparesCost?.totalSparesValue &&
-    // jobSparesCost?.totalLabourValue &&
-    // jobSparesCost?.grandTotal
+    return jobSparesInfo[0]?.sparesAndLabour || jobConsumablesInfo?.[0]?.sparesAndLabour || jobLaborInfo[0]?.sparesAndLabour;
   }
 
   const submitJobCard = () => {
@@ -231,6 +233,10 @@ const JobCardUpdate = () => {
     const updatedData = { ...jobSparesCost, totalSparesValue: value };
     setJobSparesCost(updatedData);
   };
+  const handleTotalConsumablesValueChange = (value) => {
+    const updatedData = { ...jobSparesCost, totalConsumablesValue: value };
+    setJobSparesCost(updatedData);
+  };
   const handleTotalLabourValueChange = (value) => {
     const updatedData = { ...jobSparesCost, totalLabourValue: value };
     setJobSparesCost(updatedData);
@@ -253,17 +259,21 @@ const JobCardUpdate = () => {
   const submitJobSpares = () => {
     const totalSparesValue = sumAmounts(jobSparesInfo);
     handleTotalSparesValueChange(totalSparesValue);
+    const totalConsumablesValue = sumAmounts(jobConsumablesInfo);
+    handleTotalConsumablesValueChange(totalConsumablesValue);
     const totalLaborValue = sumAmounts(jobLaborInfo);
     handleTotalLabourValueChange(totalLaborValue);
-    const grandTotalValue = totalSparesValue + totalLaborValue;
+    const grandTotalValue = totalSparesValue + totalConsumablesValue + totalLaborValue;
     handleGrandTotalValueChange(grandTotalValue);
 
     const jobSpares = {
       id: selectedRowSpares.id,
       jobId: selectedRowSpares.jobId,
       jobSparesInfo: jobSparesInfo,
+      jobConsumablesInfo: jobConsumablesInfo,
       jobLaborInfo: jobLaborInfo,
       totalSparesValue: totalSparesValue,
+      totalConsumablesValue: totalConsumablesValue,
       totalLabourValue: totalLaborValue,
       grandTotal: grandTotalValue
     };
@@ -307,6 +317,7 @@ const JobCardUpdate = () => {
     setJobSparesUpdateOpen(false);
     setSelectedRowSpares({});
     setJobSparesInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' })));
+    setJobConsumablesInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '0', rate: '0', amount: '0' })));
     setJobLaborInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '0', rate: '0', amount: '0' })));
     setJobSparesCost({});
   };
@@ -553,9 +564,12 @@ const JobCardUpdate = () => {
                   <JobSparesUpdate data={jobSparesInfo} updateData={setJobSparesInfo} />
                 </Grid>
                 <Grid item xs={12}>
+                  <JobConsumablesUpdate data={jobConsumablesInfo} updateData={setJobConsumablesInfo} />
+                </Grid>
+                <Grid item xs={12}>
                   <JobLaborUpdate data={jobLaborInfo} updateData={setJobLaborInfo} />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
                   <TextField
                     label="Total Spares Value"
                     required
@@ -567,7 +581,19 @@ const JobCardUpdate = () => {
                     //onChange={(e) => handleTotalSparesValueChange(e.target.value)}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
+                  <TextField
+                    label="Total Consumables Value"
+                    required
+                    variant="outlined"
+                    value={jobSparesCost.totalConsumablesValue || ''}
+                    InputProps={{
+                      readOnly: true
+                    }}
+                    //onChange={(e) => handleTotalSparesValueChange(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={3}>
                   <TextField
                     label="Total Labour Value"
                     required
@@ -579,7 +605,7 @@ const JobCardUpdate = () => {
                     //onChange={(e) => handleTotalLabourValueChange(e.target.value)}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
                   <TextField
                     label="Grand Total"
                     required

@@ -266,6 +266,7 @@ const JobSparesUpdate = ({ data, updateData }) => {
                               //setChoosenSpares(newValue);
                               handleInputChange(row.sparesId, 'sparesAndLabour', newValue.desc);
                               handleInputChange(row.sparesId, 'rate', newValue.sellRate);
+                              handleInputChange(row.sparesId, 'amount', newValue.sellRate * row?.qty || 0);
                               handleInputChange(row.sparesId, 'sparesId', newValue.id);
                             }}
                             renderInput={(params) => <TextField {...params} label="Search Spares" disabled={!!row.sparesId} />}
