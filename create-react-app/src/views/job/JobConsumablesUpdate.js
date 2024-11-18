@@ -39,7 +39,7 @@ const JobConsumablesUpdate = ({ data, updateData }) => {
               <Table style={{ minWidth: 1000 }}>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Labor</TableCell>
+                    <TableCell>Consumables</TableCell>
                     <TableCell>Amount</TableCell>
                     <TableCell>Action</TableCell>
                   </TableRow>
