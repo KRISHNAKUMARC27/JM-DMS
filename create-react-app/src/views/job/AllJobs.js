@@ -159,6 +159,11 @@ const AllJobs = () => {
         // })
       },
       {
+        accessorKey: 'invoiceId', //access nested data with dot notation
+        header: 'Invoice No.',
+        size: 150
+      },
+      {
         accessorKey: 'ownerName', //access nested data with dot notation
         header: 'Owner Name',
         size: 150
@@ -189,30 +194,35 @@ const AllJobs = () => {
         size: 150
       },
       {
+        accessorKey: 'jobCreationDate',
+        header: 'Job Open Date',
+        size: 150
+      },
+      {
+        accessorKey: 'jobCloseDate',
+        header: 'Job Closed Date',
+        size: 150
+      },
+      {
         accessorKey: 'technicianName',
         header: 'Technician',
         size: 150
       },
-      {
-        accessorKey: 'driver',
-        header: 'Driver',
-        size: 150
-      },
-      {
-        accessorKey: 'vehicleOutDate',
-        header: 'Vechicle Out Date',
-        size: 150
-      },
+      // {
+      //   accessorKey: 'driver',
+      //   header: 'Driver',
+      //   size: 150
+      // },
       {
         accessorKey: 'ownerAddress',
         header: 'Address',
         size: 150
-      },
-      {
-        accessorKey: 'ownerEmailId',
-        header: 'Email',
-        size: 150
       }
+      // {
+      //   accessorKey: 'ownerEmailId',
+      //   header: 'Email',
+      //   size: 150
+      // }
     ],
     []
   );
@@ -285,6 +295,9 @@ const AllJobs = () => {
           data={data}
           editingMode="modal"
           enableEditing
+          initialState={{
+            pagination: { pageSize: 10 } // Set default rows per page to 5
+          }}
           muiTablePaperProps={{
             elevation: 0, //change the mui box shadow
             //customize paper styles

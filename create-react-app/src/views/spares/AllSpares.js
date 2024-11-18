@@ -220,7 +220,7 @@ const AllSpares = () => {
             }
           }}
           initialState={{
-            pagination: { pageSize: 5 } // Set default rows per page to 5
+            pagination: { pageSize: 10 } // Set default rows per page to 5
           }}
           renderRowActions={({ row }) => (
             <Box sx={{ display: 'flex', gap: '1rem' }}>
