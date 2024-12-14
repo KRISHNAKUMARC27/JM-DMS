@@ -393,6 +393,24 @@ function JobView({ open, onClose, job }) {
               <ThemeProvider theme={tableTheme}>
                 <MaterialReactTable
                   columns={jobSparesColumn}
+                  data={jobSpares.jobConsumablesInfo || []}
+                  muiTablePaperProps={{
+                    elevation: 0,
+                    sx: {
+                      borderRadius: '0',
+                      background: `linear-gradient(${gradientAngle}deg, ${color1}, ${color2})`
+                    }
+                  }}
+                />
+              </ThemeProvider>
+            </Grid>
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>
+            <Grid item xs={12}>
+              <ThemeProvider theme={tableTheme}>
+                <MaterialReactTable
+                  columns={jobSparesColumn}
                   data={jobSpares.jobLaborInfo || []}
                   muiTablePaperProps={{
                     elevation: 0,
@@ -408,8 +426,26 @@ function JobView({ open, onClose, job }) {
               <Divider />
             </Grid>
             <Grid item xs={12}>
+              <ThemeProvider theme={tableTheme}>
+                <MaterialReactTable
+                  columns={jobSparesColumn}
+                  data={jobSpares.jobExternalWorkInfo || []}
+                  muiTablePaperProps={{
+                    elevation: 0,
+                    sx: {
+                      borderRadius: '0',
+                      background: `linear-gradient(${gradientAngle}deg, ${color1}, ${color2})`
+                    }
+                  }}
+                />
+              </ThemeProvider>
+            </Grid>
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>
+            <Grid item xs={12}>
               <Grid container direction="row" spacing={gridSpacing}>
-                <Grid item xs={4}>
+                <Grid item xs={2}>
                   <TextField
                     label="Total Spares Value"
                     variant="outlined"
@@ -419,11 +455,31 @@ function JobView({ open, onClose, job }) {
                     }}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={2}>
+                  <TextField
+                    label="Total Consumables Value"
+                    variant="outlined"
+                    value={jobSpares.totalConsumablesValue || ''}
+                    InputProps={{
+                      readOnly: true
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={2}>
                   <TextField
                     label="Total Labour Value"
                     variant="outlined"
                     value={jobSpares.totalLabourValue || ''}
+                    InputProps={{
+                      readOnly: true
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={2}>
+                  <TextField
+                    label="Total ExternalWork Value"
+                    variant="outlined"
+                    value={jobSpares.totalExternalWorkValue || ''}
                     InputProps={{
                       readOnly: true
                     }}

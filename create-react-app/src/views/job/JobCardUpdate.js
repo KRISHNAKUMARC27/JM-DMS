@@ -30,6 +30,7 @@ const JobInfo = Loadable(lazy(() => import('views/job/JobInfo')));
 const JobSparesUpdate = Loadable(lazy(() => import('views/job/JobSparesUpdate')));
 const JobLaborUpdate = Loadable(lazy(() => import('views/job/JobLaborUpdate')));
 const JobConsumablesUpdate = Loadable(lazy(() => import('views/job/JobConsumablesUpdate')));
+const JobExternalWorkUpdate = Loadable(lazy(() => import('views/job/JobExternalWorkUpdate')));
 
 const JobCardUpdate = () => {
   const [data, setData] = useState([]);
@@ -50,6 +51,9 @@ const JobCardUpdate = () => {
     [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' }))
   );
   const [jobLaborInfo, setJobLaborInfo] = useState(
+    [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '0', rate: '0', amount: '0' }))
+  );
+  const [jobExternalWorkInfo, setJobExternalWorkInfo] = useState(
     [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '0', rate: '0', amount: '0' }))
   );
   const [jobSparesUpdateOpen, setJobSparesUpdateOpen] = useState(false);
@@ -94,10 +98,12 @@ const JobCardUpdate = () => {
         setJobSparesInfo(data.jobSparesInfo);
         setJobConsumablesInfo(data.jobConsumablesInfo);
         setJobLaborInfo(data.jobLaborInfo);
+        setJobExternalWorkInfo(data.jobExternalWorkInfo);
         let sparesCost = {
           totalSparesValue: data.totalSparesValue,
           totalConsumablesValue: data.totalConsumablesValue,
           totalLabourValue: data.totalLabourValue,
+          totalExternalWorkValue: data.totalExternalWorkValue,
           grandTotal: data.grandTotal
         };
         setJobSparesCost(sparesCost);
@@ -159,7 +165,12 @@ const JobCardUpdate = () => {
   }
 
   function isJobSparesUpdateComplete() {
-    return jobSparesInfo[0]?.sparesAndLabour || jobConsumablesInfo?.[0]?.sparesAndLabour || jobLaborInfo[0]?.sparesAndLabour;
+    return (
+      jobSparesInfo[0]?.sparesAndLabour ||
+      jobConsumablesInfo?.[0]?.sparesAndLabour ||
+      jobLaborInfo[0]?.sparesAndLabour ||
+      jobExternalWorkInfo?.[0]?.sparesAndLabour
+    );
   }
 
   const submitJobCard = () => {
@@ -241,6 +252,10 @@ const JobCardUpdate = () => {
     const updatedData = { ...jobSparesCost, totalLabourValue: value };
     setJobSparesCost(updatedData);
   };
+  const handleTotalExternalWorkValueChange = (value) => {
+    const updatedData = { ...jobSparesCost, totalExternalWorkValue: value };
+    setJobSparesCost(updatedData);
+  };
   const handleGrandTotalValueChange = (value) => {
     const updatedData = { ...jobSparesCost, grandTotal: value };
     setJobSparesCost(updatedData);
@@ -263,7 +278,9 @@ const JobCardUpdate = () => {
     handleTotalConsumablesValueChange(totalConsumablesValue);
     const totalLaborValue = sumAmounts(jobLaborInfo);
     handleTotalLabourValueChange(totalLaborValue);
-    const grandTotalValue = totalSparesValue + totalConsumablesValue + totalLaborValue;
+    const totalExternalWorkValue = sumAmounts(jobExternalWorkInfo);
+    handleTotalExternalWorkValueChange(totalExternalWorkValue);
+    const grandTotalValue = totalSparesValue + totalConsumablesValue + totalLaborValue + totalExternalWorkValue;
     handleGrandTotalValueChange(grandTotalValue);
 
     const jobSpares = {
@@ -272,9 +289,11 @@ const JobCardUpdate = () => {
       jobSparesInfo: jobSparesInfo,
       jobConsumablesInfo: jobConsumablesInfo,
       jobLaborInfo: jobLaborInfo,
+      jobExternalWorkInfo: jobExternalWorkInfo,
       totalSparesValue: totalSparesValue,
       totalConsumablesValue: totalConsumablesValue,
       totalLabourValue: totalLaborValue,
+      totalExternalWorkValue: totalExternalWorkValue,
       grandTotal: grandTotalValue
     };
 
@@ -319,6 +338,9 @@ const JobCardUpdate = () => {
     setJobSparesInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' })));
     setJobConsumablesInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '0', rate: '0', amount: '0' })));
     setJobLaborInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '0', rate: '0', amount: '0' })));
+    setJobExternalWorkInfo(
+      [...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '0', rate: '0', amount: '0' }))
+    );
     setJobSparesCost({});
   };
 
@@ -569,7 +591,10 @@ const JobCardUpdate = () => {
                 <Grid item xs={12}>
                   <JobLaborUpdate data={jobLaborInfo} updateData={setJobLaborInfo} />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={12}>
+                  <JobExternalWorkUpdate data={jobExternalWorkInfo} updateData={setJobExternalWorkInfo} />
+                </Grid>
+                <Grid item xs={2}>
                   <TextField
                     label="Total Spares Value"
                     required
@@ -581,7 +606,7 @@ const JobCardUpdate = () => {
                     //onChange={(e) => handleTotalSparesValueChange(e.target.value)}
                   />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                   <TextField
                     label="Total Consumables Value"
                     required
@@ -593,7 +618,7 @@ const JobCardUpdate = () => {
                     //onChange={(e) => handleTotalSparesValueChange(e.target.value)}
                   />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                   <TextField
                     label="Total Labour Value"
                     required
@@ -605,7 +630,19 @@ const JobCardUpdate = () => {
                     //onChange={(e) => handleTotalLabourValueChange(e.target.value)}
                   />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
+                  <TextField
+                    label="Total ExternalWork Value"
+                    required
+                    variant="outlined"
+                    value={jobSparesCost.totalExternalWorkValue || ''}
+                    InputProps={{
+                      readOnly: true
+                    }}
+                    //onChange={(e) => handleTotalLabourValueChange(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={4}>
                   <TextField
                     label="Grand Total"
                     required

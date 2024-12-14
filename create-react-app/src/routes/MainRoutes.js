@@ -18,6 +18,10 @@ const SparesCategory = Loadable(lazy(() => import('views/spares/SparesCategory')
 const AllLabor = Loadable(lazy(() => import('views/labor/AllLabor')));
 const CreateLabor = Loadable(lazy(() => import('views/labor/LaborCreate')));
 const LaborCategory = Loadable(lazy(() => import('views/labor/LaborCategory')));
+
+const AllExternalWork = Loadable(lazy(() => import('views/externalwork/AllExternalWork')));
+const CreateExternalWork = Loadable(lazy(() => import('views/externalwork/ExternalWorkCreate')));
+const ExternalWorkCategory = Loadable(lazy(() => import('views/externalwork/ExternalWorkCategory')));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -115,6 +119,33 @@ const MainRoutes = {
         {
           path: 'laborCategory',
           element: <LaborCategory />
+        }
+      ]
+    },
+    {
+      path: 'externalWork',
+      children: [
+        {
+          path: 'table',
+          element: <AllExternalWork />
+        }
+      ]
+    },
+    {
+      path: 'externalWork',
+      children: [
+        {
+          path: 'createExternalWork',
+          element: <CreateExternalWork />
+        }
+      ]
+    },
+    {
+      path: 'externalWork',
+      children: [
+        {
+          path: 'externalWorkCategory',
+          element: <ExternalWorkCategory />
         }
       ]
     }
