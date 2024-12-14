@@ -285,7 +285,7 @@ const JobLaborUpdate = ({ data, updateData }) => {
                       </TableCell>
                       <TableCell>
                         <Autocomplete
-                          options={options}
+                          options={options.filter((option) => !data.some((row) => row.sparesId === option.id))} // Filter out already added spares
                           getOptionLabel={(option) => option.desc}
                           style={{ width: 300 }}
                           //inputValue={row?.sparesAndLabour || ''}
@@ -301,7 +301,7 @@ const JobLaborUpdate = ({ data, updateData }) => {
                             handleInputChange(index, 'amount', newValue.amount * row?.qty || 0);
                             handleInputChange(index, 'sparesId', newValue.id);
                           }}
-                          renderInput={(params) => <TextField {...params} label="Search Labor" />}
+                          renderInput={(params) => <TextField {...params} label="Search Labor" disabled={!!row.sparesId} />}
                         />
                       </TableCell>
                       <TableCell>
