@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Breadcrumbs, Link } from '@mui/material';
 import { lazy } from 'react';
+import PropTypes from 'prop-types';
 
 // project imports
 import Loadable from 'ui-component/Loadable';
@@ -15,10 +16,35 @@ const JobUserDetails = Loadable(lazy(() => import('views/job/JobUserDetails')));
 const JobCarDetails = Loadable(lazy(() => import('views/job/JobCarDetails')));
 const JobInfo = Loadable(lazy(() => import('views/job/JobInfo')));
 
-function JobCardCreate() {
+function JobCardCreate({ data }) {
+  const job = {
+    ...data,
+    id: null,
+    jobId: null,
+    invoiceId: null,
+    jobStatus: null,
+    jobCreationDate: null,
+    jobCloseDate: null,
+    kiloMeters: null,
+    fuelPoints: null,
+    vehicleOutDate: null,
+    technicianName: null,
+    driver: null,
+    jobInfo: null,
+    cover: null,
+    glass: null,
+    dashboardAndTools: null,
+    spareWheel: null,
+    jackeyHandles: null,
+    toolKits: null,
+    penDrive: null,
+    wheelCap: null,
+    acGrills: null
+  };
+
   const [activeComponent, setActiveComponent] = useState('UserDetails');
-  const [userDetails, setUserDetails] = useState({});
-  const [carDetails, setCarDetails] = useState({});
+  const [userDetails, setUserDetails] = useState(job || {});
+  const [carDetails, setCarDetails] = useState(job || {});
   const [jobInfo, setJobInfo] = useState([...Array(1)].map(() => ({ complaints: '', completed: '', remarks: '' })));
   const [showAlert, setShowAlert] = React.useState(false);
   const [alertMess, setAlertMess] = React.useState('');
@@ -189,4 +215,7 @@ function JobCardCreate() {
   );
 }
 
+JobCardCreate.propTypes = {
+  data: PropTypes.object.isRequired
+};
 export default JobCardCreate;

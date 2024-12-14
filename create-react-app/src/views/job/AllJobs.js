@@ -9,11 +9,12 @@ import DialogContent from '@mui/material/DialogContent';
 import { DialogTitle, Button, FormControl, InputLabel, Select, MenuItem, IconButton, Tooltip } from '@mui/material';
 import Box from '@mui/material/Box';
 //import DataRowDialog from 'utils/DataRowDialog';
-import { OpenInNew } from '@mui/icons-material';
+import { OpenInNew, AddCircle } from '@mui/icons-material';
 //import Alert from 'views/utilities/Alert';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import JobView from 'views/job/JobView';
+import JobCardCreate from 'views/job/JobCardCreate';
 
 const StatusCell = ({ cell }) => (
   <Box
@@ -37,6 +38,7 @@ const AllJobs = () => {
   const [jobStatusOpen, setJobStatusOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
   const [jobInfoOpen, setJobInfoOpen] = useState(false);
+  const [jobCardCreateOpen, setJobCardCreateOpen] = useState(false);
 
   const [showAlert, setShowAlert] = React.useState(false);
   const [alertMess, setAlertMess] = React.useState('');
@@ -49,6 +51,7 @@ const AllJobs = () => {
       setJobStatusOpen(false);
       setSelectedRow({});
       setJobInfoOpen(false);
+      setJobCardCreateOpen(false);
     };
   }, []);
 
@@ -78,6 +81,8 @@ const AllJobs = () => {
     setSelectedRow({});
     setJobStatusOpen(false);
     setJobInfoOpen(false);
+    setJobCardCreateOpen(false);
+    fetchAllJobsData();
   };
 
   const handleSave = () => {
@@ -317,7 +322,7 @@ const AllJobs = () => {
           // })}
           renderRowActions={({ row }) => (
             <Box sx={{ display: 'flex', gap: '1rem' }}>
-              <Tooltip arrow placement="right" title="Open Job Card">
+              <Tooltip arrow placement="right" title="View Job Card">
                 <IconButton
                   onClick={() => {
                     setSelectedRow(row.original);
@@ -325,6 +330,17 @@ const AllJobs = () => {
                   }}
                 >
                   <OpenInNew />
+                </IconButton>
+              </Tooltip>
+              <Tooltip arrow placement="right" title="Create Job Card">
+                <IconButton
+                  onClick={() => {
+                    setSelectedRow(row.original);
+                    console.log('jobcard open');
+                    setJobCardCreateOpen(true);
+                  }}
+                >
+                  <AddCircle />
                 </IconButton>
               </Tooltip>
             </Box>
@@ -361,55 +377,43 @@ const AllJobs = () => {
               <MenuItem value="CANCELLED">CANCELLED</MenuItem>
             </Select>
           </FormControl>
-          {/* <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Job Status</TableCell>
-                <TableCell>Completed</TableCell>
-                <TableCell>Remarks</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {selectedRow.jobInfo?.length > 0 &&
-                selectedRow.jobInfo?.map((row, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      <TextField
-                        fullWidth
-                        value={row?.complaints || ''}
-                        //onChange={(e) => handleInputChange(index, 'complaints', e.target.value)}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <FormControl variant="outlined" style={{ margin: '1px 0' }}>
-                        <InputLabel>Status</InputLabel>
-                        <Select
-                          value={row?.completed || ''}
-                          //onChange={(e) => handleInputChange(index, 'completed', e.target.value)}
-                          label="Status"
-                        >
-                          <MenuItem value="Completed">Completed</MenuItem>
-                          <MenuItem value="In-Progress">In-Progress</MenuItem>
-                          <MenuItem value="Not Started">Not Started</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        fullWidth
-                        value={row?.remarks || ''}
-                        //onChange={(e) => handleInputChange(index, 'remarks', e.target.value)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleSave} color="primary">
             Save
           </Button>
+          <Button onClick={handleClose} color="secondary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={jobCardCreateOpen}
+        onClose={handleClose}
+        scroll={'paper'}
+        aria-labelledby="scroll-dialog-title"
+        aria-describedby="scroll-dialog-description"
+        fullWidth
+        maxWidth="lg"
+      >
+        <Box
+          sx={{
+            bgcolor: '#f44336',
+            color: '#FFFFFF',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '0.75rem 1.25rem'
+          }}
+        >
+          <DialogTitle id="scroll-dialog-title" sx={{ flexGrow: 1, fontSize: '1.5rem' }}>
+            New JobCard for {selectedRow.vehicleRegNo}
+          </DialogTitle>
+        </Box>
+        <DialogContent dividers={scroll === 'paper'}>
+          <JobCardCreate data={selectedRow} />
+        </DialogContent>
+        <DialogActions>
           <Button onClick={handleClose} color="secondary">
             Close
           </Button>
