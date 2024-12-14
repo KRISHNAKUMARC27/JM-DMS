@@ -13,7 +13,9 @@ import TotalIncomeLightCard from './TotalIncomeLightCard';
 //import TotalGrowthBarChart from './TotalGrowthBarChart';
 import SparesEvents from './SparesEvents';
 import { gridSpacing } from 'store/constant';
-
+import TotalJobCardBarChart from './TotalJobCardBarChart';
+import TotalJobCardRevenueBarChart from './TotalJobCardRevenueBarChart';
+import TotalJobRevenueSplitBarChart from './TotalJobRevenueSplitBarChart';
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
 const Dashboard = () => {
@@ -116,6 +118,27 @@ const Dashboard = () => {
                 {displayFlag && <TotalIncomeDarkCard totalRevenue={totalRevenue.labor} name={'Total Income From Labor'} />}
               </Grid>
             </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={6}>
+        <Grid container spacing={gridSpacing}>
+          <Grid item xs={12} md={12}>
+            <TotalJobRevenueSplitBarChart />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={6}>
+        <Grid container spacing={gridSpacing}>
+          <Grid item xs={12} md={12}>
+            <TotalJobCardRevenueBarChart />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <Grid container spacing={gridSpacing}>
+          <Grid item xs={12} md={12}>
+            <TotalJobCardBarChart />
           </Grid>
         </Grid>
       </Grid>
