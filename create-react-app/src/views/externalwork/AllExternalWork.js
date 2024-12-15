@@ -18,6 +18,7 @@ import {
 import { Edit } from '@mui/icons-material';
 import { gridSpacing } from 'store/constant';
 import Loadable from 'ui-component/Loadable';
+import { getRequest } from 'utils/fetchRequest';
 
 const ExternalWorkCreate = Loadable(lazy(() => import('views/externalwork/ExternalWorkCreate')));
 
@@ -40,21 +41,13 @@ const AllExternalWork = () => {
     setExternalWorkUpdateOpen(false);
   };
 
-  const fetchAllExternalWorkData = () => {
-    fetch(process.env.REACT_APP_API_URL + '/externalWork')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setData(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const fetchAllExternalWorkData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/externalWork');
+      setData(data);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   //should be memoized or stable
@@ -177,7 +170,11 @@ const AllExternalWork = () => {
                   <Typography variant="h2">{'Updating ExternalWork: ' + externalworkDetails.desc}</Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <ExternalWorkCreate data={externalworkDetails} setExternalWorkUpdateOpen={setExternalWorkUpdateOpen} fetchAllExternalWorkData={fetchAllExternalWorkData} />
+                  <ExternalWorkCreate
+                    data={externalworkDetails}
+                    setExternalWorkUpdateOpen={setExternalWorkUpdateOpen}
+                    fetchAllExternalWorkData={fetchAllExternalWorkData}
+                  />
                 </Grid>
               </Grid>
             </Grid>

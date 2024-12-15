@@ -22,6 +22,7 @@ import Stack from '@mui/material/Stack';
 
 import PropTypes from 'prop-types';
 import { gridSpacing } from 'store/constant';
+import { getRequest, getBlobRequest } from 'utils/fetchRequest';
 
 function JobView({ open, onClose, job }) {
   const [jobSpares, setJobSpares] = React.useState({});
@@ -35,75 +36,52 @@ function JobView({ open, onClose, job }) {
     };
   }, [job]);
 
-  const getJobSpares = (id) => {
-    fetch(process.env.REACT_APP_API_URL + '/jobCard/jobSpares/' + id)
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setJobSpares(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const getJobSpares = async (id) => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/jobCard/jobSpares/' + id);
+      setJobSpares(data);
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
-  const downloadJobCardPDF = () => {
-    fetch(process.env.REACT_APP_API_URL + '/jobCard/pdf/' + job.id)
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.blob();
-      })
-      .then((blob) => {
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.setAttribute('download', 'Job_' + job.jobId + '_' + job.vehicleRegNo + '.pdf'); // Use the filename you wish
-        //link.setAttribute('download', response.headers.get('Content-Disposition').split('filename=')[1] || 'download.pdf');
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode.removeChild(link);
-      })
-      .catch((err) => {
-        onClose();
-        console.log(err.message);
-        setAlertMess(err.message);
-        setShowAlert(true);
-      });
+  const downloadJobCardPDF = async () => {
+    try {
+      const blob = await getBlobRequest(process.env.REACT_APP_API_URL + '/jobCard/pdf/' + job.id);
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.setAttribute('download', 'Job_' + job.jobId + '_' + job.vehicleRegNo + '.pdf'); // Use the filename you wish
+      //link.setAttribute('download', response.headers.get('Content-Disposition').split('filename=')[1] || 'download.pdf');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (err) {
+      console.log(err.message);
+      onClose();
+      console.log(err.message);
+      setAlertMess(err.message);
+      setShowAlert(true);
+    }
   };
 
-  const printBillPDF = () => {
-    fetch(process.env.REACT_APP_API_URL + '/jobCard/billPdf/' + job.id)
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.blob();
-      })
-      .then((blob) => {
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.setAttribute('download', 'Bill_' + job.jobId + '_' + job.vehicleRegNo + '.pdf'); // Use the filename you wish
-        //link.setAttribute('download', response.headers.get('Content-Disposition').split('filename=')[1] || 'download.pdf');
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode.removeChild(link);
-      })
-      .catch((err) => {
-        onClose();
-        console.log(err.message);
-        setAlertMess(err.message);
-        setShowAlert(true);
-      });
+  const printBillPDF = async () => {
+    try {
+      const blob = await getBlobRequest(process.env.REACT_APP_API_URL + '/jobCard/billPdf/' + job.id);
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.setAttribute('download', 'Bill_' + job.jobId + '_' + job.vehicleRegNo + '.pdf'); // Use the filename you wish
+      //link.setAttribute('download', response.headers.get('Content-Disposition').split('filename=')[1] || 'download.pdf');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (err) {
+      onClose();
+      console.log(err.message);
+      setAlertMess(err.message);
+      setShowAlert(true);
+    }
   };
 
   const jobInfocolumns = React.useMemo(

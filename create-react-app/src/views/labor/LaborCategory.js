@@ -6,6 +6,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
+import { getRequest, deleteRequest, postRequest, putRequestNotStringify } from 'utils/fetchRequest';
 
 function LaborCategory() {
   const [laborCategory, setLaborCategory] = useState({});
@@ -25,21 +26,13 @@ function LaborCategory() {
     };
   }, []);
 
-  const fetchAllLaborCategoryListData = () => {
-    fetch(process.env.REACT_APP_API_URL + '/labor/laborCategory')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setLaborCategoryList(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const fetchAllLaborCategoryListData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/labor/laborCategory');
+      setLaborCategoryList(data);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   function isLaborCategoryComplete() {
@@ -54,33 +47,20 @@ function LaborCategory() {
   };
 
   const saveLaborCategory = async (payload) => {
-    await fetch(process.env.REACT_APP_API_URL + '/labor/saveLaborCategory', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAlertMess('LaborCategory ' + data.category + ' created successfully');
-        setAlertColor('success');
-        setShowAlert(true);
-        setLaborCategory({});
-        fetchAllLaborCategoryListData();
-        console.log(data);
-      })
-      .catch((err) => {
-        setAlertMess(err.message);
-        setAlertColor('info');
-        setShowAlert(true);
-      });
+    try {
+      const data = await postRequest(process.env.REACT_APP_API_URL + '/labor/saveLaborCategory', payload);
+      setAlertMess('LaborCategory ' + data.category + ' created successfully');
+      setAlertColor('success');
+      setShowAlert(true);
+      setLaborCategory({});
+      fetchAllLaborCategoryListData();
+      console.log(data);
+    } catch (err) {
+      console.error(err.message);
+      setAlertMess(err.message);
+      setAlertColor('info');
+      setShowAlert(true);
+    }
   };
 
   const handleCategoryChange = (event) => {
@@ -89,30 +69,18 @@ function LaborCategory() {
   };
 
   const handleRowDelete = async (rowIndex) => {
-    await fetch(process.env.REACT_APP_API_URL + '/labor/laborCategory/' + rowIndex, {
-      method: 'DELETE',
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAlertMess('LaborCategory ' + data.category + ' deleted successfully');
-        setAlertColor('success');
-        setShowAlert(true);
-        fetchAllLaborCategoryListData();
-      })
-      .catch((err) => {
-        setAlertMess(err.message);
-        setAlertColor('info');
-        setShowAlert(true);
-      });
+    try {
+      const data = await deleteRequest(process.env.REACT_APP_API_URL + '/labor/laborCategory/' + rowIndex);
+      setAlertMess('LaborCategory ' + data.category + ' deleted successfully');
+      setAlertColor('success');
+      setShowAlert(true);
+      fetchAllLaborCategoryListData();
+    } catch (err) {
+      setAlertMess(err.message);
+      setAlertColor('info');
+      setShowAlert(true);
+      console.error(err.message);
+    }
   };
 
   const handleInputChange = (oldValue, newValue, index, column) => {
@@ -123,35 +91,26 @@ function LaborCategory() {
     setNewCategory(newValue);
   };
 
-  const updateLaborCategory = () => {
-    fetch(process.env.REACT_APP_API_URL + '/labor/laborCategory/' + oldCategory + '/' + newCategory, {
-      method: 'PUT',
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAlertMess('LaborCategory ' + data.category + ' updated successfully');
-        setAlertColor('success');
-        setShowAlert(true);
-        setOldCategory('');
-        setNewCategory('');
-        fetchAllLaborCategoryListData();
-      })
-      .catch((err) => {
-        setAlertMess(err.message);
-        setAlertColor('info');
-        setShowAlert(true);
-        setOldCategory('');
-        setNewCategory('');
-      });
+  const updateLaborCategory = async () => {
+    try {
+      const data = await putRequestNotStringify(
+        process.env.REACT_APP_API_URL + '/labor/laborCategory/' + oldCategory + '/' + newCategory,
+        {}
+      );
+      setAlertMess('LaborCategory ' + data.category + ' updated successfully');
+      setAlertColor('success');
+      setShowAlert(true);
+      setOldCategory('');
+      setNewCategory('');
+      fetchAllLaborCategoryListData();
+    } catch (err) {
+      console.error(err.message);
+      setAlertMess(err.message);
+      setAlertColor('info');
+      setShowAlert(true);
+      setOldCategory('');
+      setNewCategory('');
+    }
   };
 
   return (

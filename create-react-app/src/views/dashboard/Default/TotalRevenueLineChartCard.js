@@ -18,6 +18,7 @@ import ChartDataYear from './chart-data/total-order-year-line-chart';
 // assets
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 //import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { getRequest } from 'utils/fetchRequest';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   backgroundColor: theme.palette.primary.dark,
@@ -82,31 +83,14 @@ function TotalRevenueLineChartCard() {
   }, []);
 
   const fetchRevenueStats = async (uri) => {
-    await fetch(process.env.REACT_APP_API_URL + '/stats/revenueEarnings/' + uri)
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setRevenueStats(data);
-        // const updatedSeries = {
-        //   ...chartData.series[0],
-        //   name: 'Revenue',
-        //   data: data.earningsSeries
-        // };
-        // setChartData((prevChartData) => ({
-        //   ...prevChartData,
-        //   series: [updatedSeries]
-        // }));
-        setChartData(data.chartData);
-        setDisplayFlag(true);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/stats/revenueEarnings/' + uri);
+      setRevenueStats(data);
+      setChartData(data.chartData);
+      setDisplayFlag(true);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   const handleChangeTime = (newValue) => {
@@ -134,21 +118,6 @@ function TotalRevenueLineChartCard() {
     }
     setTimeValue(newValue);
   };
-
-  // const getChartData = () => {
-  //   switch (timeValue) {
-  //     case 'D':
-  //       return chartData;
-  //     case 'W':
-  //       return chartData;
-  //     case 'M':
-  //       return chartData;
-  //     case 'Y':
-  //       return chartData;
-  //     default:
-  //       return chartData; // Default case
-  //   }
-  // };
 
   return (
     <>

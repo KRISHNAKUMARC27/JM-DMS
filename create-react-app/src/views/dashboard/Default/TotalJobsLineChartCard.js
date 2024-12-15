@@ -19,6 +19,7 @@ import ChartDataYear from './chart-data/total-order-year-line-chart';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 //import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
 //import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { getRequest } from 'utils/fetchRequest';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.dark,
@@ -73,32 +74,20 @@ function TotalJobsLineChartCard() {
 
   useEffect(() => {
     fetchJobCardsStats('D');
-
     return () => {
       setJobCardsStats();
-      // setChartData(ChartDataYear);
-      // setTimeValue('D');
-      // setDisplayFlag(true);
     };
   }, []);
 
   const fetchJobCardsStats = async (uri) => {
-    await fetch(process.env.REACT_APP_API_URL + '/stats/totalJobCards/' + uri)
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setJobCardsStats(data);
-        setChartData(data.chartData);
-        setDisplayFlag(true);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/stats/totalJobCards/' + uri);
+      setJobCardsStats(data);
+      setChartData(data.chartData);
+      setDisplayFlag(true);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   const handleChangeTime = (newValue) => {

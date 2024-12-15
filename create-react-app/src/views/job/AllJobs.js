@@ -15,6 +15,7 @@ import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import JobView from 'views/job/JobView';
 import JobCardCreate from 'views/job/JobCardCreate';
+import { getRequest, putRequest } from 'utils/fetchRequest';
 
 const StatusCell = ({ cell }) => (
   <Box
@@ -55,21 +56,13 @@ const AllJobs = () => {
     };
   }, []);
 
-  const fetchAllJobsData = () => {
-    fetch(process.env.REACT_APP_API_URL + '/jobCard')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setData(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const fetchAllJobsData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/jobCard');
+      setData(data);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   const handleJobStatusChange = (event) => {
@@ -92,33 +85,18 @@ const AllJobs = () => {
   };
 
   const updateJobCard = async (payload) => {
-    await fetch(process.env.REACT_APP_API_URL + '/jobCard/jobStatus', {
-      method: 'PUT',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setSelectedRow({});
-        setJobStatusOpen(false);
-        fetchAllJobsData();
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setAlertMess(err.message);
-        setShowAlert(true);
-        setSelectedRow({});
-        setJobStatusOpen(false);
-      });
+    try {
+      await putRequest(process.env.REACT_APP_API_URL + '/jobCard/jobStatus', payload);
+      setSelectedRow({});
+      setJobStatusOpen(false);
+      fetchAllJobsData();
+    } catch (err) {
+      console.log(err.message);
+      setAlertMess(err.message);
+      setShowAlert(true);
+      setSelectedRow({});
+      setJobStatusOpen(false);
+    }
   };
 
   //should be memoized or stable
@@ -145,23 +123,6 @@ const AllJobs = () => {
             setJobStatusOpen(true);
           }
         })
-        // sx: {
-        //   cursor: 'pointer'
-        // }
-        //color: 'blue'
-        // borderRight: ' solid #e0e0e0',
-        // alignItems: 'center',
-        // '& .Mui-TableHeadCell-Content-Labels': {
-        //   padding: '0px'
-        // },
-        // '& .MuiBox-root': {
-        //   padding: '0px'
-        // },
-        // backgroundColor: 'white',
-
-        // borderTop: ' solid #e0e0e0'
-        // }
-        // })
       },
       {
         accessorKey: 'invoiceId', //access nested data with dot notation
@@ -419,7 +380,7 @@ const AllJobs = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <JobView open={jobInfoOpen} onClose={handleClose} job={selectedRow} />
+      {jobInfoOpen && <JobView open={jobInfoOpen} onClose={handleClose} job={selectedRow} />}
     </div>
   );
 };

@@ -6,6 +6,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
+import { getRequest, postRequest } from 'utils/fetchRequest';
 
 function ExternalWorkCreate({ data, setExternalWorkUpdateOpen, fetchAllExternalWorkData }) {
   const [externalworkDetails, setExternalWorkDetails] = useState(data || {});
@@ -27,60 +28,43 @@ function ExternalWorkCreate({ data, setExternalWorkUpdateOpen, fetchAllExternalW
     setExternalWorkDetails(data || {});
   }, [data]);
 
-  const fetchAllExternalWorkCategoryListData = () => {
-    fetch(process.env.REACT_APP_API_URL + '/externalWork/externalWorkCategory')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setExternalWorkCategoryList(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const fetchAllExternalWorkCategoryListData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/externalWork/externalWorkCategory');
+      setExternalWorkCategoryList(data);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   function isExternalWorkComplete() {
-    return externalworkDetails.category && externalworkDetails.desc && externalworkDetails.amount !== null && externalworkDetails.amount !== undefined;
+    return (
+      externalworkDetails.category &&
+      externalworkDetails.desc &&
+      externalworkDetails.amount !== null &&
+      externalworkDetails.amount !== undefined
+    );
   }
 
   const saveExternalWorkInventory = async (payload) => {
-    await fetch(process.env.REACT_APP_API_URL + '/externalWork', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
+    try {
+      const data = await postRequest(process.env.REACT_APP_API_URL + '/externalWork', payload);
+      if (fetchAllExternalWorkData) {
+        fetchAllExternalWorkData();
       }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (fetchAllExternalWorkData) {
-          fetchAllExternalWorkData();
-        }
-        if (setExternalWorkUpdateOpen) {
-          setExternalWorkUpdateOpen(false);
-        }
-        setAlertMess(data.desc + ' added successfully ');
-        setAlertColor('success');
-        setShowAlert(true);
-        console.log(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setAlertMess(err.message);
-        setAlertColor('info');
-        setShowAlert(true);
-      });
+      if (setExternalWorkUpdateOpen) {
+        setExternalWorkUpdateOpen(false);
+      }
+      setAlertMess(data.desc + ' added successfully ');
+      setAlertColor('success');
+      setShowAlert(true);
+      console.log(data);
+    } catch (err) {
+      console.log(err.message);
+      setAlertMess(err.message);
+      setAlertColor('info');
+      setShowAlert(true);
+    }
   };
 
   const handleCategoryChange = (event) => {

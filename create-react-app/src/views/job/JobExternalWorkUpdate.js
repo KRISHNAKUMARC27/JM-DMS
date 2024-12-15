@@ -20,6 +20,7 @@ import {
 import MainCard from 'ui-component/cards/MainCard';
 
 import { gridSpacing } from 'store/constant';
+import { getRequest, postRequest } from 'utils/fetchRequest';
 
 const JobExternalWorkUpdate = ({ data, updateData }) => {
   const [externalworkCategoryList, setExternalWorkCategoryList] = React.useState([]);
@@ -36,62 +37,31 @@ const JobExternalWorkUpdate = ({ data, updateData }) => {
     };
   }, []);
 
-  const fetchAllExternalWorkCategoryListData = () => {
-    fetch(process.env.REACT_APP_API_URL + '/externalWork/externalWorkCategory')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setExternalWorkCategoryList(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const fetchAllExternalWorkCategoryListData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/externalWork/externalWorkCategory');
+      setExternalWorkCategoryList(data);
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
-  const fetchAllExternalWorkData = () => {
-    fetch(process.env.REACT_APP_API_URL + '/externalWork')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAllExternalWork(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const fetchAllExternalWorkData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/externalWork');
+      setAllExternalWork(data);
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
   const fetchOptions = async (value) => {
-    await fetch(process.env.REACT_APP_API_URL + '/externalWork/findExternalWorkInventoryWithFilter', {
-      method: 'POST',
-      body: JSON.stringify(value),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setOptions(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    try {
+      const data = await postRequest(process.env.REACT_APP_API_URL + '/externalWork/findExternalWorkInventoryWithFilter', value);
+      setOptions(data);
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
   const handleInputChange = (index, column, value) => {

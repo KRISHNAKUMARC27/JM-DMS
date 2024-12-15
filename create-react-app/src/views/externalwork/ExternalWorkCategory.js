@@ -6,6 +6,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
+import { getRequest, deleteRequest, postRequest, putRequestNotStringify } from 'utils/fetchRequest';
 
 function ExternalWorkCategory() {
   const [externalworkCategory, setExternalWorkCategory] = useState({});
@@ -25,21 +26,13 @@ function ExternalWorkCategory() {
     };
   }, []);
 
-  const fetchAllExternalWorkCategoryListData = () => {
-    fetch(process.env.REACT_APP_API_URL + '/externalWork/externalWorkCategory')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setExternalWorkCategoryList(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const fetchAllExternalWorkCategoryListData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/externalWork/externalWorkCategory');
+      setExternalWorkCategoryList(data);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   function isExternalWorkCategoryComplete() {
@@ -54,33 +47,20 @@ function ExternalWorkCategory() {
   };
 
   const saveExternalWorkCategory = async (payload) => {
-    await fetch(process.env.REACT_APP_API_URL + '/externalWork/saveExternalWorkCategory', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAlertMess('ExternalWorkCategory ' + data.category + ' created successfully');
-        setAlertColor('success');
-        setShowAlert(true);
-        setExternalWorkCategory({});
-        fetchAllExternalWorkCategoryListData();
-        console.log(data);
-      })
-      .catch((err) => {
-        setAlertMess(err.message);
-        setAlertColor('info');
-        setShowAlert(true);
-      });
+    try {
+      const data = await postRequest(process.env.REACT_APP_API_URL + '/externalWork/saveExternalWorkCategory', payload);
+      setAlertMess('ExternalWorkCategory ' + data.category + ' created successfully');
+      setAlertColor('success');
+      setShowAlert(true);
+      setExternalWorkCategory({});
+      fetchAllExternalWorkCategoryListData();
+      console.log(data);
+    } catch (err) {
+      console.error(err.message);
+      setAlertMess(err.message);
+      setAlertColor('info');
+      setShowAlert(true);
+    }
   };
 
   const handleCategoryChange = (event) => {
@@ -89,30 +69,18 @@ function ExternalWorkCategory() {
   };
 
   const handleRowDelete = async (rowIndex) => {
-    await fetch(process.env.REACT_APP_API_URL + '/externalWork/externalWorkCategory/' + rowIndex, {
-      method: 'DELETE',
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAlertMess('ExternalWorkCategory ' + data.category + ' deleted successfully');
-        setAlertColor('success');
-        setShowAlert(true);
-        fetchAllExternalWorkCategoryListData();
-      })
-      .catch((err) => {
-        setAlertMess(err.message);
-        setAlertColor('info');
-        setShowAlert(true);
-      });
+    try {
+      const data = await deleteRequest(process.env.REACT_APP_API_URL + '/externalWork/externalWorkCategory/' + rowIndex);
+      setAlertMess('ExternalWorkCategory ' + data.category + ' deleted successfully');
+      setAlertColor('success');
+      setShowAlert(true);
+      fetchAllExternalWorkCategoryListData();
+    } catch (err) {
+      setAlertMess(err.message);
+      setAlertColor('info');
+      setShowAlert(true);
+      console.error(err.message);
+    }
   };
 
   const handleInputChange = (oldValue, newValue, index, column) => {
@@ -123,35 +91,26 @@ function ExternalWorkCategory() {
     setNewCategory(newValue);
   };
 
-  const updateExternalWorkCategory = () => {
-    fetch(process.env.REACT_APP_API_URL + '/externalWork/externalWorkCategory/' + oldCategory + '/' + newCategory, {
-      method: 'PUT',
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAlertMess('ExternalWorkCategory ' + data.category + ' updated successfully');
-        setAlertColor('success');
-        setShowAlert(true);
-        setOldCategory('');
-        setNewCategory('');
-        fetchAllExternalWorkCategoryListData();
-      })
-      .catch((err) => {
-        setAlertMess(err.message);
-        setAlertColor('info');
-        setShowAlert(true);
-        setOldCategory('');
-        setNewCategory('');
-      });
+  const updateExternalWorkCategory = async () => {
+    try {
+      const data = await putRequestNotStringify(
+        process.env.REACT_APP_API_URL + '/externalWork/externalWorkCategory/' + oldCategory + '/' + newCategory,
+        {}
+      );
+      setAlertMess('ExternalWorkCategory ' + data.category + ' updated successfully');
+      setAlertColor('success');
+      setShowAlert(true);
+      setOldCategory('');
+      setNewCategory('');
+      fetchAllExternalWorkCategoryListData();
+    } catch (err) {
+      console.error(err.message);
+      setAlertMess(err.message);
+      setAlertColor('info');
+      setShowAlert(true);
+      setOldCategory('');
+      setNewCategory('');
+    }
   };
 
   return (

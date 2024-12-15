@@ -6,6 +6,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
+import { getRequest, deleteRequest, postRequest, putRequestNotStringify } from 'utils/fetchRequest';
 
 function SparesCategory() {
   const [sparesCategory, setSparesCategory] = useState({});
@@ -25,21 +26,13 @@ function SparesCategory() {
     };
   }, []);
 
-  const fetchAllSparesCategoryListData = () => {
-    fetch(process.env.REACT_APP_API_URL + '/spares/sparesCategory')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setSparesCategoryList(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const fetchAllSparesCategoryListData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/spares/sparesCategory');
+      setSparesCategoryList(data);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   function isSparesCategoryComplete() {
@@ -54,33 +47,19 @@ function SparesCategory() {
   };
 
   const saveSparesCategory = async (payload) => {
-    await fetch(process.env.REACT_APP_API_URL + '/spares/saveSparesCategory', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAlertMess('SparesCategory ' + data.category + ' created successfully');
-        setAlertColor('success');
-        setShowAlert(true);
-        setSparesCategory({});
-        fetchAllSparesCategoryListData();
-        console.log(data);
-      })
-      .catch((err) => {
-        setAlertMess(err.message);
-        setAlertColor('info');
-        setShowAlert(true);
-      });
+    try {
+      const data = await postRequest(process.env.REACT_APP_API_URL + '/spares/saveSparesCategory', payload);
+      setAlertMess('SparesCategory ' + data.category + ' created successfully');
+      setAlertColor('success');
+      setShowAlert(true);
+      setSparesCategory({});
+      fetchAllSparesCategoryListData();
+      console.log(data);
+    } catch (err) {
+      setAlertMess(err.message);
+      setAlertColor('info');
+      setShowAlert(true);
+    }
   };
 
   const handleCategoryChange = (event) => {
@@ -89,30 +68,18 @@ function SparesCategory() {
   };
 
   const handleRowDelete = async (rowIndex) => {
-    await fetch(process.env.REACT_APP_API_URL + '/spares/sparesCategory/' + rowIndex, {
-      method: 'DELETE',
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAlertMess('SparesCategory ' + data.category + ' deleted successfully');
-        setAlertColor('success');
-        setShowAlert(true);
-        fetchAllSparesCategoryListData();
-      })
-      .catch((err) => {
-        setAlertMess(err.message);
-        setAlertColor('info');
-        setShowAlert(true);
-      });
+    try {
+      const data = await deleteRequest(process.env.REACT_APP_API_URL + '/spares/sparesCategory/' + rowIndex);
+      setAlertMess('SparesCategory ' + data.category + ' deleted successfully');
+      setAlertColor('success');
+      setShowAlert(true);
+      fetchAllSparesCategoryListData();
+    } catch (err) {
+      setAlertMess(err.message);
+      setAlertColor('info');
+      setShowAlert(true);
+      console.error(err.message);
+    }
   };
 
   const handleInputChange = (oldValue, newValue, index, column) => {
@@ -123,35 +90,26 @@ function SparesCategory() {
     setNewCategory(newValue);
   };
 
-  const updateSparesCategory = () => {
-    fetch(process.env.REACT_APP_API_URL + '/spares/sparesCategory/' + oldCategory + '/' + newCategory, {
-      method: 'PUT',
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAlertMess('SparesCategory ' + data.category + ' updated successfully');
-        setAlertColor('success');
-        setShowAlert(true);
-        setOldCategory('');
-        setNewCategory('');
-        fetchAllSparesCategoryListData();
-      })
-      .catch((err) => {
-        setAlertMess(err.message);
-        setAlertColor('info');
-        setShowAlert(true);
-        setOldCategory('');
-        setNewCategory('');
-      });
+  const updateSparesCategory = async () => {
+    try {
+      const data = await putRequestNotStringify(
+        process.env.REACT_APP_API_URL + '/spares/sparesCategory/' + oldCategory + '/' + newCategory,
+        {}
+      );
+      setAlertMess('SparesCategory ' + data.category + ' updated successfully');
+      setAlertColor('success');
+      setShowAlert(true);
+      setOldCategory('');
+      setNewCategory('');
+      fetchAllSparesCategoryListData();
+    } catch (err) {
+      console.error(err.message);
+      setAlertMess(err.message);
+      setAlertColor('info');
+      setShowAlert(true);
+      setOldCategory('');
+      setNewCategory('');
+    }
   };
 
   return (

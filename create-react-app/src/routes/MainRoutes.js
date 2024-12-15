@@ -1,4 +1,5 @@
 import { lazy } from 'react';
+import PrivateRoute from 'auth/PrivateRoute'; // Import the PrivateRoute component
 
 // project imports
 import MainLayout from 'layout/MainLayout';
@@ -22,7 +23,6 @@ const LaborCategory = Loadable(lazy(() => import('views/labor/LaborCategory')));
 const AllExternalWork = Loadable(lazy(() => import('views/externalwork/AllExternalWork')));
 const CreateExternalWork = Loadable(lazy(() => import('views/externalwork/ExternalWorkCreate')));
 const ExternalWorkCategory = Loadable(lazy(() => import('views/externalwork/ExternalWorkCategory')));
-// ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
   path: '/',
@@ -30,174 +30,116 @@ const MainRoutes = {
   children: [
     {
       path: '/',
-      element: <JobCardUpdate />
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'JOBCARD']}>
+          <JobCardUpdate />
+        </PrivateRoute>
+      )
     },
     {
-      path: 'dashboard',
-      children: [
-        {
-          path: 'default',
-          element: <DashboardDefault />
-        }
-      ]
+      path: 'dashboard/default',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN']}>
+          <DashboardDefault />
+        </PrivateRoute>
+      )
     },
     {
-      path: 'card',
-      children: [
-        {
-          path: 'table',
-          element: <AllJobs />
-        }
-      ]
+      path: 'card/table',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'JOBCARD']}>
+          <AllJobs />
+        </PrivateRoute>
+      )
     },
     {
-      path: 'card',
-      children: [
-        {
-          path: 'createCard',
-          element: <CreateCard />
-        }
-      ]
+      path: 'card/createCard',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'JOBCARD']}>
+          <CreateCard />
+        </PrivateRoute>
+      )
     },
     {
-      path: 'card',
-      children: [
-        {
-          path: 'updateCard',
-          element: <JobCardUpdate />
-        }
-      ]
+      path: 'card/updateCard',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'JOBCARD']}>
+          <JobCardUpdate />
+        </PrivateRoute>
+      )
     },
     {
-      path: 'spares',
-      children: [
-        {
-          path: 'table',
-          element: <AllSpares />
-        }
-      ]
+      path: 'spares/table',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'SPARES']}>
+          <AllSpares />
+        </PrivateRoute>
+      )
     },
     {
-      path: 'spares',
-      children: [
-        {
-          path: 'createSpares',
-          element: <CreateSpares />
-        }
-      ]
+      path: 'spares/createSpares',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'SPARES']}>
+          <CreateSpares />
+        </PrivateRoute>
+      )
     },
     {
-      path: 'spares',
-      children: [
-        {
-          path: 'sparesCategory',
-          element: <SparesCategory />
-        }
-      ]
+      path: 'spares/sparesCategory',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'SPARES']}>
+          <SparesCategory />
+        </PrivateRoute>
+      )
     },
     {
-      path: 'labor',
-      children: [
-        {
-          path: 'table',
-          element: <AllLabor />
-        }
-      ]
+      path: 'labor/table',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'SPARES']}>
+          <AllLabor />
+        </PrivateRoute>
+      )
     },
     {
-      path: 'labor',
-      children: [
-        {
-          path: 'createLabor',
-          element: <CreateLabor />
-        }
-      ]
+      path: 'labor/createLabor',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'SPARES']}>
+          <CreateLabor />
+        </PrivateRoute>
+      )
     },
     {
-      path: 'labor',
-      children: [
-        {
-          path: 'laborCategory',
-          element: <LaborCategory />
-        }
-      ]
+      path: 'labor/laborCategory',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'SPARES']}>
+          <LaborCategory />
+        </PrivateRoute>
+      )
     },
     {
-      path: 'externalWork',
-      children: [
-        {
-          path: 'table',
-          element: <AllExternalWork />
-        }
-      ]
+      path: 'externalWork/table',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'SPARES']}>
+          <AllExternalWork />
+        </PrivateRoute>
+      )
     },
     {
-      path: 'externalWork',
-      children: [
-        {
-          path: 'createExternalWork',
-          element: <CreateExternalWork />
-        }
-      ]
+      path: 'externalWork/createExternalWork',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'SPARES']}>
+          <CreateExternalWork />
+        </PrivateRoute>
+      )
     },
     {
-      path: 'externalWork',
-      children: [
-        {
-          path: 'externalWorkCategory',
-          element: <ExternalWorkCategory />
-        }
-      ]
+      path: 'externalWork/externalWorkCategory',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'SPARES']}>
+          <ExternalWorkCategory />
+        </PrivateRoute>
+      )
     }
-    // {
-    //   path: 'utils',
-    //   children: [
-    //     {
-    //       path: 'util-typography',
-    //       element: <UtilsTypography />
-    //     }
-    //   ]
-    // },
-    // {
-    //   path: 'utils',
-    //   children: [
-    //     {
-    //       path: 'util-color',
-    //       element: <UtilsColor />
-    //     }
-    //   ]
-    // },
-    // {
-    //   path: 'utils',
-    //   children: [
-    //     {
-    //       path: 'util-shadow',
-    //       element: <UtilsShadow />
-    //     }
-    //   ]
-    // },
-    // {
-    //   path: 'icons',
-    //   children: [
-    //     {
-    //       path: 'tabler-icons',
-    //       element: <UtilsTablerIcons />
-    //     }
-    //   ]
-    // },
-    // {
-    //   path: 'icons',
-    //   children: [
-    //     {
-    //       path: 'material-icons',
-    //       element: <UtilsMaterialIcons />
-    //     }
-    //   ]
-    // },
-    // {
-    //   path: 'sample-page',
-    //   element: <SamplePage />
-    // }
   ]
 };
 

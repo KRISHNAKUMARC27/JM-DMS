@@ -18,6 +18,7 @@ import {
 import { Edit } from '@mui/icons-material';
 import { gridSpacing } from 'store/constant';
 import Loadable from 'ui-component/Loadable';
+import { getRequest } from 'utils/fetchRequest';
 
 const SparesCreate = Loadable(lazy(() => import('views/spares/SparesCreate')));
 
@@ -40,40 +41,14 @@ const AllSpares = () => {
     setSparesUpdateOpen(false);
   };
 
-  const fetchAllSparesData = () => {
-    fetch(process.env.REACT_APP_API_URL + '/spares')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setData(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const fetchAllSparesData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/spares');
+      setData(data);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
-
-  // const fetchAllSparesCategoryListData = () => {
-  //   fetch(process.env.REACT_APP_API_URL + '/spares/sparesCategory')
-  //     .then(async (response) => {
-  //       if (!response.ok) {
-  //         const errorText = await response.text();
-  //         throw new Error(errorText || response.statusText);
-  //       }
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       setSparesCategoryList(data);
-  //       console.log(JSON.stringify(sparesCategoryList));
-  //     })
-  //     .catch((err) => {
-  //       console.log(err.message);
-  //     });
-  // };
 
   //should be memoized or stable
   const columns = useMemo(

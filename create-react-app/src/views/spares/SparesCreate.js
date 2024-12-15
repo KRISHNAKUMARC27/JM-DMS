@@ -6,6 +6,8 @@ import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
+import { getRequest, postRequest } from 'utils/fetchRequest';
+
 function SparesCreate({ data, setSparesUpdateOpen, fetchAllSparesData }) {
   const [sparesDetails, setSparesDetails] = useState(data || {});
   const [sparesCategoryList, setSparesCategoryList] = useState([]);
@@ -26,21 +28,13 @@ function SparesCreate({ data, setSparesUpdateOpen, fetchAllSparesData }) {
     setSparesDetails(data || {});
   }, [data]);
 
-  const fetchAllSparesCategoryListData = () => {
-    fetch(process.env.REACT_APP_API_URL + '/spares/sparesCategory')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setSparesCategoryList(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const fetchAllSparesCategoryListData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/spares/sparesCategory');
+      setSparesCategoryList(data);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   function isSparesComplete() {
@@ -61,38 +55,24 @@ function SparesCreate({ data, setSparesUpdateOpen, fetchAllSparesData }) {
   }
 
   const saveSparesInventory = async (payload) => {
-    await fetch(process.env.REACT_APP_API_URL + '/spares', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
+    try {
+      const data = await postRequest(process.env.REACT_APP_API_URL + '/spares', payload);
+      if (fetchAllSparesData) {
+        fetchAllSparesData();
       }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (fetchAllSparesData) {
-          fetchAllSparesData();
-        }
-        if (setSparesUpdateOpen) {
-          setSparesUpdateOpen(false);
-        }
-        setAlertMess(data.desc + ' added successfully ');
-        setAlertColor('success');
-        setShowAlert(true);
-        console.log(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setAlertMess(err.message);
-        setAlertColor('info');
-        setShowAlert(true);
-      });
+      if (setSparesUpdateOpen) {
+        setSparesUpdateOpen(false);
+      }
+      setAlertMess(data.desc + ' added successfully ');
+      setAlertColor('success');
+      setShowAlert(true);
+      console.log(data);
+    } catch (err) {
+      console.log(err.message);
+      setAlertMess(err.message);
+      setAlertColor('info');
+      setShowAlert(true);
+    }
   };
 
   const handleCategoryChange = (event) => {

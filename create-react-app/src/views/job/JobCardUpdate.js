@@ -31,6 +31,7 @@ const JobSparesUpdate = Loadable(lazy(() => import('views/job/JobSparesUpdate'))
 const JobLaborUpdate = Loadable(lazy(() => import('views/job/JobLaborUpdate')));
 const JobConsumablesUpdate = Loadable(lazy(() => import('views/job/JobConsumablesUpdate')));
 const JobExternalWorkUpdate = Loadable(lazy(() => import('views/job/JobExternalWorkUpdate')));
+import { getRequest, putRequest, postRequest } from 'utils/fetchRequest';
 
 const JobCardUpdate = () => {
   const [data, setData] = useState([]);
@@ -68,50 +69,34 @@ const JobCardUpdate = () => {
     };
   }, []);
 
-  const findAllByJobStatusOpen = () => {
-    fetch(process.env.REACT_APP_API_URL + '/jobCard/status/OPEN')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setData(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const findAllByJobStatusOpen = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/jobCard/status/OPEN');
+      setData(data);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
-  const getJobSpares = (id) => {
-    fetch(process.env.REACT_APP_API_URL + '/jobCard/jobSpares/' + id)
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setJobSparesInfo(data.jobSparesInfo);
-        setJobConsumablesInfo(data.jobConsumablesInfo);
-        setJobLaborInfo(data.jobLaborInfo);
-        setJobExternalWorkInfo(data.jobExternalWorkInfo);
-        let sparesCost = {
-          totalSparesValue: data.totalSparesValue,
-          totalConsumablesValue: data.totalConsumablesValue,
-          totalLabourValue: data.totalLabourValue,
-          totalExternalWorkValue: data.totalExternalWorkValue,
-          grandTotal: data.grandTotal
-        };
-        setJobSparesCost(sparesCost);
-        setJobSparesUpdateOpen(true);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const getJobSpares = async (id) => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/jobCard/jobSpares/' + id);
+      setJobSparesInfo(data.jobSparesInfo);
+      setJobConsumablesInfo(data.jobConsumablesInfo);
+      setJobLaborInfo(data.jobLaborInfo);
+      setJobExternalWorkInfo(data.jobExternalWorkInfo);
+      let sparesCost = {
+        totalSparesValue: data.totalSparesValue,
+        totalConsumablesValue: data.totalConsumablesValue,
+        totalLabourValue: data.totalLabourValue,
+        totalExternalWorkValue: data.totalExternalWorkValue,
+        grandTotal: data.grandTotal
+      };
+      setJobSparesCost(sparesCost);
+      setJobSparesUpdateOpen(true);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   const updateJobInfo = (row) => {
@@ -208,27 +193,15 @@ const JobCardUpdate = () => {
   };
 
   const updateJobCard = async (payload) => {
-    await fetch(process.env.REACT_APP_API_URL + '/jobCard', {
-      method: 'PUT',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        handleClose();
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    try {
+      await putRequest(process.env.REACT_APP_API_URL + '/jobCard', payload);
+      handleClose();
+    } catch (err) {
+      console.log(err.message);
+      handleClose();
+      setAlertMess(err.message);
+      setShowAlert(true);
+    }
   };
 
   const updateJobSparesInfo = (row) => {
@@ -301,30 +274,15 @@ const JobCardUpdate = () => {
   };
 
   const updateJobSpares = async (payload) => {
-    await fetch(process.env.REACT_APP_API_URL + '/jobCard/jobSpares', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        handleClose();
-      })
-      .catch((err) => {
-        handleClose();
-        console.log(err.message);
-        setAlertMess(err.message);
-        setShowAlert(true);
-      });
+    try {
+      await postRequest(process.env.REACT_APP_API_URL + '/jobCard/jobSpares', payload);
+      handleClose();
+    } catch (err) {
+      console.log(err.message);
+      handleClose();
+      setAlertMess(err.message);
+      setShowAlert(true);
+    }
   };
 
   const handleClose = () => {
@@ -344,13 +302,6 @@ const JobCardUpdate = () => {
     setJobSparesCost({});
   };
 
-  // const handleJobSparesClose = () => {
-  //   setJobSparesUpdateOpen(false);
-  //   setSelectedRowSpares({});
-  //   setJobSparesInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '', rate: '', amount: '' })));
-  //   setJobLaborInfo([...Array(1)].map(() => ({ sparesId: '', category: '', sparesAndLabour: '', qty: '0', rate: '0', amount: '0' })));
-  //   setJobSparesCost({});
-  // };
   //should be memoized or stable
   const columns = useMemo(
     () => [

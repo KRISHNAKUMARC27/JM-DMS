@@ -11,6 +11,7 @@ import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
 import { Button } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
+import { postRequest } from 'utils/fetchRequest';
 
 const JobUserDetails = Loadable(lazy(() => import('views/job/JobUserDetails')));
 const JobCarDetails = Loadable(lazy(() => import('views/job/JobCarDetails')));
@@ -106,35 +107,20 @@ function JobCardCreate({ data }) {
   };
 
   const saveJobCard = async (payload) => {
-    await fetch(process.env.REACT_APP_API_URL + '/jobCard', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setAlertMess('JobCard ' + data.jobId + ' for ' + data.vehicleRegNo + ' created successfully');
-        setAlertColor('success');
-        setShowAlert(true);
-        setUserDetails({});
-        setCarDetails({});
-        setJobInfo([...Array(1)].map(() => ({ complaints: '', completed: '', remarks: '' })));
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setAlertMess(err.message);
-        setAlertColor('info');
-        setShowAlert(true);
-      });
+    try {
+      const data = await postRequest(process.env.REACT_APP_API_URL + '/jobCard', payload);
+      setAlertMess('JobCard ' + data.jobId + ' for ' + data.vehicleRegNo + ' created successfully');
+      setAlertColor('success');
+      setShowAlert(true);
+      setUserDetails({});
+      setCarDetails({});
+      setJobInfo([...Array(1)].map(() => ({ complaints: '', completed: '', remarks: '' })));
+    } catch (err) {
+      console.log(err.message);
+      setAlertMess(err.message);
+      setAlertColor('info');
+      setShowAlert(true);
+    }
   };
 
   return (

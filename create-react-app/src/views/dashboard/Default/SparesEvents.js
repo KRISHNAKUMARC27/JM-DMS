@@ -7,6 +7,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
+import { getRequest, deleteRequest } from 'utils/fetchRequest';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   overflow: 'hidden',
@@ -48,48 +49,27 @@ function SparesEvents() {
     };
   }, []);
 
-  const fetchAllSparesEventsListData = () => {
-    fetch(process.env.REACT_APP_API_URL + '/stats/sparesEvents')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setSparesEventsList(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const fetchAllSparesEventsListData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/stats/sparesEvents');
+      setSparesEventsList(data);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   const handleRowDelete = async (id) => {
-    await fetch(process.env.REACT_APP_API_URL + '/stats/sparesEvents/' + id, {
-      method: 'DELETE',
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAlertMess('Spares Event deleted successfully');
-        setAlertColor('success');
-        setShowAlert(true);
-        setSparesEventsList(data);
-      })
-      .catch((err) => {
-        setAlertMess(err.message);
-        setAlertColor('info');
-        setShowAlert(true);
-      });
+    try {
+      const data = await deleteRequest(process.env.REACT_APP_API_URL + '/stats/sparesEvents/' + id);
+      setAlertMess('Spares Event deleted successfully');
+      setAlertColor('success');
+      setShowAlert(true);
+      setSparesEventsList(data);
+    } catch (err) {
+      setAlertMess(err.message);
+      setAlertColor('info');
+      setShowAlert(true);
+    }
   };
 
   return (

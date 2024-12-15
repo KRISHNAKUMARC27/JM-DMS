@@ -6,6 +6,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
+import { getRequest, postRequest } from 'utils/fetchRequest';
 
 function LaborCreate({ data, setLaborUpdateOpen, fetchAllLaborData }) {
   const [laborDetails, setLaborDetails] = useState(data || {});
@@ -27,21 +28,13 @@ function LaborCreate({ data, setLaborUpdateOpen, fetchAllLaborData }) {
     setLaborDetails(data || {});
   }, [data]);
 
-  const fetchAllLaborCategoryListData = () => {
-    fetch(process.env.REACT_APP_API_URL + '/labor/laborCategory')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setLaborCategoryList(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const fetchAllLaborCategoryListData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/labor/laborCategory');
+      setLaborCategoryList(data);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   function isLaborComplete() {
@@ -49,38 +42,24 @@ function LaborCreate({ data, setLaborUpdateOpen, fetchAllLaborData }) {
   }
 
   const saveLaborInventory = async (payload) => {
-    await fetch(process.env.REACT_APP_API_URL + '/labor', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
+    try {
+      const data = await postRequest(process.env.REACT_APP_API_URL + '/labor', payload);
+      if (fetchAllLaborData) {
+        fetchAllLaborData();
       }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (fetchAllLaborData) {
-          fetchAllLaborData();
-        }
-        if (setLaborUpdateOpen) {
-          setLaborUpdateOpen(false);
-        }
-        setAlertMess(data.desc + ' added successfully ');
-        setAlertColor('success');
-        setShowAlert(true);
-        console.log(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setAlertMess(err.message);
-        setAlertColor('info');
-        setShowAlert(true);
-      });
+      if (setLaborUpdateOpen) {
+        setLaborUpdateOpen(false);
+      }
+      setAlertMess(data.desc + ' added successfully ');
+      setAlertColor('success');
+      setShowAlert(true);
+      console.log(data);
+    } catch (err) {
+      console.log(err.message);
+      setAlertMess(err.message);
+      setAlertColor('info');
+      setShowAlert(true);
+    }
   };
 
   const handleCategoryChange = (event) => {

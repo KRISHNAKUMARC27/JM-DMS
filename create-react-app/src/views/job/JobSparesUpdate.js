@@ -20,6 +20,7 @@ import {
 import MainCard from 'ui-component/cards/MainCard';
 
 import { gridSpacing } from 'store/constant';
+import { getRequest, postRequest } from 'utils/fetchRequest';
 
 const JobSparesUpdate = ({ data, updateData }) => {
   const [sparesCategoryList, setSparesCategoryList] = React.useState([]);
@@ -36,76 +37,32 @@ const JobSparesUpdate = ({ data, updateData }) => {
     };
   }, []);
 
-  const fetchAllSparesCategoryListData = () => {
-    fetch(process.env.REACT_APP_API_URL + '/spares/sparesCategory')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setSparesCategoryList(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const fetchAllSparesCategoryListData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/spares/sparesCategory');
+      setSparesCategoryList(data);
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
-  const fetchAllSparesData = () => {
-    fetch(process.env.REACT_APP_API_URL + '/spares')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setAllSpares(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const fetchAllSparesData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/spares');
+      setAllSpares(data);
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
   const fetchOptions = async (value) => {
-    await fetch(process.env.REACT_APP_API_URL + '/spares/findSparesInventoryWithFilter', {
-      method: 'POST',
-      body: JSON.stringify(value),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setOptions(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    try {
+      const data = await postRequest(process.env.REACT_APP_API_URL + '/spares/findSparesInventoryWithFilter', value);
+      setOptions(data);
+    } catch (err) {
+      console.log(err.message);
+    }
   };
-
-  // Handle changes for individual fields and set action to MODIFY for existing spares
-  // const handleInputChange = (index, column, value) => {
-  //   const newRows = [...data];
-  //   newRows[index][column] = value;
-
-  //   // If the spare was not newly added (i.e., it has an ID), set the action to MODIFY
-  //   if (newRows[index].action !== 'ADD') {
-  //     newRows[index].action = 'MODIFY';
-  //   }
-
-  //   updateData(newRows);
-  // };
 
   const handleInputChange = (sparesId, column, value) => {
     const newRows = [...data];

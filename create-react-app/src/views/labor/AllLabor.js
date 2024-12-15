@@ -18,21 +18,19 @@ import {
 import { Edit } from '@mui/icons-material';
 import { gridSpacing } from 'store/constant';
 import Loadable from 'ui-component/Loadable';
+import { getRequest } from 'utils/fetchRequest';
 
 const LaborCreate = Loadable(lazy(() => import('views/labor/LaborCreate')));
 
 const AllLabor = () => {
   const [data, setData] = useState([]);
-  //const [laborCategoryList, setLaborCategoryList] = useState([]);
   const [laborDetails, setLaborDetails] = useState({});
   const [laborUpdateOpen, setLaborUpdateOpen] = useState(false);
 
   useEffect(() => {
     fetchAllLaborData();
-    //fetchAllLaborCategoryListData();
     return () => {
       setData([]);
-      //setLaborCategoryList([]);
     };
   }, []);
 
@@ -40,40 +38,14 @@ const AllLabor = () => {
     setLaborUpdateOpen(false);
   };
 
-  const fetchAllLaborData = () => {
-    fetch(process.env.REACT_APP_API_URL + '/labor')
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setData(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const fetchAllLaborData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/labor');
+      setData(data);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
-
-  // const fetchAllLaborCategoryListData = () => {
-  //   fetch(process.env.REACT_APP_API_URL + '/labor/laborCategory')
-  //     .then(async (response) => {
-  //       if (!response.ok) {
-  //         const errorText = await response.text();
-  //         throw new Error(errorText || response.statusText);
-  //       }
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       setLaborCategoryList(data);
-  //       console.log(JSON.stringify(laborCategoryList));
-  //     })
-  //     .catch((err) => {
-  //       console.log(err.message);
-  //     });
-  // };
 
   //should be memoized or stable
   const columns = useMemo(
