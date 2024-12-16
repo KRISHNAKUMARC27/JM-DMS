@@ -2,21 +2,19 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const os = require('os');
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const { createProxyServer } = require('http-proxy');
 
 const app = express();
+const proxy = createProxyServer({ changeOrigin: true });
 
-const apiProxy = createProxyMiddleware('/api', {
-  target: 'http://localhost:8080', // Your Spring Boot server address
-  changeOrigin: true,
-  secure: false, // Set to false to ignore SSL certificate errors, but be cautious with this in production
-  logLevel: 'debug',
-  pathRewrite: {
-    '^/api': '' // This will remove /api from the URL path
-  }
+// Proxy API requests and rewrite the path
+app.use('/api', (req, res) => {
+  req.url = req.url.replace(/^\/api/, ''); // Remove '/api' from the request URL
+  proxy.web(req, res, { target: 'http://localhost:8080' }, (err) => {
+    console.error('Proxy error:', err);
+    res.status(500).send('Proxy error');
+  });
 });
-
-app.use('/api', apiProxy);
 
 // Serve static files from the 'build' directory
 app.use(express.static(path.join(__dirname, 'build')));
@@ -35,6 +33,12 @@ function getLocalIpAddress() {
 }
 
 const ipAddress = getLocalIpAddress();
+
+// Fallback route should come after static middleware
+app.get('*', (req, res) => {
+  console.log("Fallback route triggered");
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 // Listening on all network interfaces to make it accessible on the local network
 http.createServer(app).listen(4001, '0.0.0.0', () => {
