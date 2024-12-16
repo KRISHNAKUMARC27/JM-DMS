@@ -14,7 +14,7 @@ const LoginPage = () => {
   const handleLogin = async () => {
     try {
       const payload = { username: username, password: password };
-      const response = await postRequest(process.env.REACT_APP_API_URL + '/api/auth/login', payload);
+      const response = await postRequest(process.env.REACT_APP_API_URL + '/auth/login', payload);
       // console.log(JSON.stringify(response));
       const { token, username: responseUsername, roles } = response; // Updated to reflect new response structure
 
