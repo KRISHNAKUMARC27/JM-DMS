@@ -8,7 +8,7 @@ const PrivateRoute = ({ children, allowedRoles }) => {
 
   // If no token, redirect to login
   if (!token) {
-    navigate('/', { replace: true });
+    navigate('/pages/login/login3', { replace: true });
     return null;
   }
 

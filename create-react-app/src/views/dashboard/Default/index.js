@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 // material-ui
-import { Grid } from '@mui/material';
+import { Grid, InputLabel, Select, MenuItem, Button } from '@mui/material';
 
 // project imports
 //import EarningCard from './EarningCard';
@@ -19,9 +19,27 @@ import TotalJobRevenueSplitBarChart from './TotalJobRevenueSplitBarChart';
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 import { getRequest } from 'utils/fetchRequest';
 
+const monthList = [
+  { id: 1, value: 'January' },
+  { id: 2, value: 'February' },
+  { id: 3, value: 'March' },
+  { id: 4, value: 'April' },
+  { id: 5, value: 'May' },
+  { id: 6, value: 'June' },
+  { id: 7, value: 'July' },
+  { id: 8, value: 'August' },
+  { id: 9, value: 'September' },
+  { id: 10, value: 'October' },
+  { id: 11, value: 'November' },
+  { id: 12, value: 'December' }
+];
+
+const yearList = [{ id: 2024 }, { id: 2025 }, { id: 2026 }, { id: 2027 }, { id: 2028 }, { id: 2029 }];
+
 const Dashboard = () => {
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [totalJobCards, setTotalJobCards] = useState(0);
+  const [reportInput, setReportInput] = useState({ month: 12, year: 2024 });
 
   const [displayFlag, setDisplayFlag] = useState(false);
   const roles = JSON.parse(localStorage.getItem('roles') || '[]');
@@ -30,6 +48,16 @@ const Dashboard = () => {
     fetchTotalRevenueData();
     fetchTotalJobCardsData();
   }, []);
+
+  const handleReportInputMonthChange = (event) => {
+    const updatedData = { ...reportInput, month: event.target.value };
+    setReportInput(updatedData);
+  };
+
+  const handleReportInputYearChange = (event) => {
+    const updatedData = { ...reportInput, year: event.target.value };
+    setReportInput(updatedData);
+  };
 
   const fetchTotalRevenueData = async () => {
     try {
@@ -46,6 +74,49 @@ const Dashboard = () => {
       const data = await getRequest(process.env.REACT_APP_API_URL + '/stats/totalJobCards');
       setTotalJobCards(data);
       setDisplayFlag(true);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  const convertToCSV = (array) => {
+    if (!array || !array.length) {
+      return '';
+    }
+
+    const headers = Object.keys(array[0]); // Get headers from the keys of the first object
+    const rows = array.map((obj) => headers.map((header) => `"${obj[header]}"`).join(',')); // Map each object to a CSV row
+
+    return [headers.join(','), ...rows].join('\n'); // Join headers and rows with line breaks
+  };
+
+  const downloadReport = async () => {
+    try {
+      const data = await getRequest(`${process.env.REACT_APP_API_URL}/stats/jobCardReport/${reportInput.month}/${reportInput.year}`);
+      if (data && Array.isArray(data)) {
+        // Convert data to CSV
+        const csvContent = convertToCSV(data);
+
+        // Create a Blob and trigger download
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const fileName = `JobCardReport_${reportInput.month}_${reportInput.year}.csv`;
+
+        if (window.navigator.msSaveBlob) {
+          // For IE browser
+          window.navigator.msSaveBlob(blob, fileName);
+        } else {
+          // For other browsers
+          const link = document.createElement('a');
+          const url = URL.createObjectURL(blob);
+          link.setAttribute('href', url);
+          link.setAttribute('download', fileName);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      } else {
+        console.error('Unexpected data format received');
+      }
     } catch (err) {
       console.error(err.message);
     }
@@ -125,13 +196,61 @@ const Dashboard = () => {
           </Grid>
         </>
       )}
-      <Grid item xs={12}>
+      <Grid item xs={6}>
         <Grid container spacing={gridSpacing}>
           <Grid item xs={12} md={12}>
             <TotalJobCardBarChart />
           </Grid>
         </Grid>
       </Grid>
+      <Grid item xs={6}>
+        <Grid container spacing={gridSpacing}>
+          <Grid item xs={12}>
+            {' '}
+            <InputLabel id="demo-select-medium" required>
+              Month
+            </InputLabel>
+            <Select
+              labelId="demo-select-medium"
+              id="demo-select-medium"
+              value={reportInput.month || ''}
+              label="Month"
+              onChange={handleReportInputMonthChange}
+            >
+              {monthList.map((option) => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.value}
+                </MenuItem>
+              ))}
+            </Select>
+          </Grid>
+          <Grid item xs={12}>
+            {' '}
+            <InputLabel id="demo-select-medium" required>
+              Year
+            </InputLabel>
+            <Select
+              labelId="demo-select-medium"
+              id="demo-select-medium"
+              value={reportInput.year || ''}
+              label="Month"
+              onChange={handleReportInputYearChange}
+            >
+              {yearList.map((option) => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.id}
+                </MenuItem>
+              ))}
+            </Select>
+          </Grid>
+          <Grid item xs={12}>
+            <Button variant="contained" color="error" onClick={() => downloadReport()}>
+              Download Report
+            </Button>
+          </Grid>
+        </Grid>
+      </Grid>
+
       <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
           <Grid item xs={12} md={12}>
