@@ -5,7 +5,7 @@ const redirectToLogin = () => {
   localStorage.removeItem('token'); // Clear expired token
   localStorage.removeItem('roles'); // Clear roles if necessary
   localStorage.removeItem('username'); // Clear username if necessary
-  //window.location.href = '/pages/login/login3'; // Navigate to login page
+  window.location.href = '/pages/login/login3'; // Navigate to login page
 };
 
 const fetchRequest = async (url, method, payload = null) => {
