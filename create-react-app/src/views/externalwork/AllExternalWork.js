@@ -23,6 +23,42 @@ import { getRequest } from 'utils/fetchRequest';
 const ExternalWorkCreate = Loadable(lazy(() => import('views/externalwork/ExternalWorkCreate')));
 
 const AllExternalWork = () => {
+  const [photos, setPhotos] = useState([]);
+
+  const handleFileChange = (event) => {
+    const files = Array.from(event.target.files);
+    setPhotos(files);
+  };
+
+  const handleUpload = async () => {
+    if (photos.length === 0) {
+      alert('Please select photos to upload.');
+      return;
+    }
+
+    const formData = new FormData();
+    photos.forEach((photo, index) => {
+      formData.append(`photo_${index}`, photo);
+    });
+
+    try {
+      const response = await fetch(process.env.REACT_APP_API_URL + '/photos', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        alert('Photos uploaded successfully!');
+        setPhotos([]); // Clear the photos after upload
+      } else {
+        alert('Failed to upload photos.');
+      }
+    } catch (error) {
+      console.error('Error uploading photos:', error);
+      alert('An error occurred during upload.');
+    }
+  };
+
   const [data, setData] = useState([]);
   //const [externalworkCategoryList, setExternalWorkCategoryList] = useState([]);
   const [externalworkDetails, setExternalWorkDetails] = useState({});
@@ -185,6 +221,43 @@ const AllExternalWork = () => {
         </DialogActions>
       </Dialog>
       <br></br>
+
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="h6">Upload Photos</Typography>
+        </Grid>
+
+        <Grid item xs={12}>
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            capture="environment"
+            onChange={handleFileChange}
+            style={{ display: 'none' }}
+            id="photo-input"
+          />
+          <label htmlFor="photo-input">
+            <Button variant="contained" component="span">
+              Take Photos
+            </Button>
+          </label>
+        </Grid>
+
+        <Grid item xs={12}>
+          {photos.length > 0 && (
+            <Box>
+              <Typography variant="body1">{photos.length} photo(s) selected.</Typography>
+            </Box>
+          )}
+        </Grid>
+
+        <Grid item xs={12}>
+          <Button variant="contained" color="primary" onClick={handleUpload} disabled={photos.length === 0}>
+            Upload Photos
+          </Button>
+        </Grid>
+      </Grid>
     </div>
   );
 };
