@@ -24,6 +24,10 @@ const AllExternalWork = Loadable(lazy(() => import('views/externalwork/AllExtern
 const CreateExternalWork = Loadable(lazy(() => import('views/externalwork/ExternalWorkCreate')));
 const ExternalWorkCategory = Loadable(lazy(() => import('views/externalwork/ExternalWorkCategory')));
 
+const AllConsumables = Loadable(lazy(() => import('views/consumables/AllConsumables')));
+const CreateConsumables = Loadable(lazy(() => import('views/consumables/ConsumablesCreate')));
+const ConsumablesCategory = Loadable(lazy(() => import('views/consumables/ConsumablesCategory')));
+
 const MainRoutes = {
   path: '/',
   element: <MainLayout />,
@@ -137,6 +141,30 @@ const MainRoutes = {
       element: (
         <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'SPARES']}>
           <ExternalWorkCategory />
+        </PrivateRoute>
+      )
+    },
+    {
+      path: 'consumables/table',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'SPARES']}>
+          <AllConsumables />
+        </PrivateRoute>
+      )
+    },
+    {
+      path: 'consumables/createConsumables',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'SPARES']}>
+          <CreateConsumables />
+        </PrivateRoute>
+      )
+    },
+    {
+      path: 'consumables/consumablesCategory',
+      element: (
+        <PrivateRoute allowedRoles={['MANAGER', 'ADMIN', 'SPARES']}>
+          <ConsumablesCategory />
         </PrivateRoute>
       )
     }

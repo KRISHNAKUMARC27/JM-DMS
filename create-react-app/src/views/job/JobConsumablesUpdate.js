@@ -3,12 +3,67 @@ import PropTypes from 'prop-types';
 
 // material-ui
 import { Grid } from '@mui/material';
-import { Table, TableBody, TableCell, TableHead, TableRow, Button, TextField } from '@mui/material';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Button,
+  TextField,
+  Autocomplete,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControl
+} from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 
 import { gridSpacing } from 'store/constant';
+import { getRequest, postRequest } from 'utils/fetchRequest';
 
 const JobConsumablesUpdate = ({ data, updateData }) => {
+  const [consumablesCategoryList, setConsumablesCategoryList] = React.useState([]);
+  const [options, setOptions] = React.useState([]);
+  const [allConsumables, setAllConsumables] = React.useState([]);
+
+  React.useEffect(() => {
+    fetchAllConsumablesCategoryListData();
+    fetchAllConsumablesData();
+    return () => {
+      setConsumablesCategoryList([]);
+      setOptions([]);
+      setAllConsumables([]);
+    };
+  }, []);
+
+  const fetchAllConsumablesCategoryListData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/consumables/consumablesCategory');
+      setConsumablesCategoryList(data);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const fetchAllConsumablesData = async () => {
+    try {
+      const data = await getRequest(process.env.REACT_APP_API_URL + '/consumables');
+      setAllConsumables(data);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const fetchOptions = async (value) => {
+    try {
+      const data = await postRequest(process.env.REACT_APP_API_URL + '/consumables/findConsumablesInventoryWithFilter', value);
+      setOptions(data);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   const handleInputChange = (index, column, value) => {
     const newRows = [...data];
     newRows[index][column] = value;
@@ -30,6 +85,14 @@ const JobConsumablesUpdate = ({ data, updateData }) => {
     }
   };
 
+  const handleCategoryTypeChange = (value) => {
+    let myArray = [value];
+    const consumablesFilter = {
+      categoryList: myArray
+    };
+    fetchOptions(consumablesFilter);
+  };
+
   return (
     <>
       <MainCard title="Job Consumables Information">
@@ -39,22 +102,59 @@ const JobConsumablesUpdate = ({ data, updateData }) => {
               <Table style={{ minWidth: 1000 }}>
                 <TableHead>
                   <TableRow>
+                    <TableCell>Consumables Category</TableCell>
                     <TableCell>Consumables</TableCell>
                     <TableCell>Amount</TableCell>
                     <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data?.map((row, index) => (
+                  {data.map((row, index) => (
                     <TableRow key={index}>
                       <TableCell>
-                        <TextField
-                          fullWidth
-                          value={row?.sparesAndLabour || ''}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            handleInputChange(index, 'sparesAndLabour', val);
+                        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                          <InputLabel id="demo-simple-select-standard-label"></InputLabel>
+                          <Select
+                            fullWidth
+                            labelId="demo-simple-select-standard-label"
+                            id="demo-simple-select-standard-label"
+                            value={row?.category || ''}
+                            label="Category Type"
+                            sx={{
+                              '& .MuiSelect-select': {
+                                color: 'black' // Change to your desired color
+                              }
+                            }}
+                            onChange={(e) => {
+                              handleCategoryTypeChange(e.target.value);
+                              handleInputChange(index, 'category', e.target.value);
+                            }}
+                          >
+                            {consumablesCategoryList.map((option) => (
+                              <MenuItem key={option.id} value={option.category}>
+                                {option.category}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </TableCell>
+                      <TableCell>
+                        <Autocomplete
+                          options={options.filter((option) => !data.some((row) => row.sparesId === option.id))} // Filter out already added spares
+                          getOptionLabel={(option) => option.desc}
+                          style={{ width: 300 }}
+                          //inputValue={row?.sparesAndLabour || ''}
+                          //onInputChange={handleInputChangeFilter}
+                          //value={row || ''}
+                          value={allConsumables.find((option) => option.desc === row.sparesAndLabour) || null}
+                          isOptionEqualToValue={(option, value) => option.id === value.id}
+                          onChange={(event, newValue) => {
+                            console.log('new value is ' + JSON.stringify(newValue));
+                            //setChoosenConsumables(newValue);
+                            handleInputChange(index, 'sparesAndLabour', newValue.desc);
+                            handleInputChange(index, 'sparesId', newValue.id);
                           }}
+                          renderInput={(params) => <TextField {...params} label="Search Consumables" disabled={!!row.sparesId} />}
                         />
                       </TableCell>
                       <TableCell>
