@@ -9,6 +9,7 @@ import { Grid, MenuItem, TextField, Typography } from '@mui/material';
 // third-party
 //import ApexCharts from 'apexcharts';
 import Chart from 'react-apexcharts';
+import dayjs from 'dayjs';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
@@ -50,11 +51,11 @@ const status = [
 const TotalJobCardRevenueBarChart = () => {
   const [testCasesStats, setTestCasesStats] = useState();
   const [chartData, setChartData] = useState(barchartData);
-  const [timeValue, setTimeValue] = useState('2024');
+  const [timeValue, setTimeValue] = useState(dayjs().year().toString());
   const [displayFlag, setDisplayFlag] = useState(false);
 
   useEffect(() => {
-    fetchTestCasesStats('2024');
+    fetchTestCasesStats(dayjs().year().toString());
 
     return () => {
       setTestCasesStats();

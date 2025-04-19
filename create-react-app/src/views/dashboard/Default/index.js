@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 // material-ui
 import { Grid, InputLabel, Select, MenuItem, Button } from '@mui/material';
+import dayjs from 'dayjs';
 
 // project imports
 //import EarningCard from './EarningCard';
@@ -39,7 +40,7 @@ const yearList = [{ id: 2024 }, { id: 2025 }, { id: 2026 }, { id: 2027 }, { id: 
 const Dashboard = () => {
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [totalJobCards, setTotalJobCards] = useState(0);
-  const [reportInput, setReportInput] = useState({ month: 12, year: 2024 });
+  const [reportInput, setReportInput] = useState({ month: dayjs().month() + 1, year: dayjs().year().toString() });
 
   const [displayFlag, setDisplayFlag] = useState(false);
   const roles = JSON.parse(localStorage.getItem('roles') || '[]');
